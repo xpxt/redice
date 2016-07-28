@@ -924,7 +924,7 @@ var game =
 
 		load: function ()
 		{
-			game.scene.captain ();
+			game.scene.intro ();
 		},
 
 		mac: function ()
