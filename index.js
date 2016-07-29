@@ -966,7 +966,7 @@ var game =
 			game.create.cap = { h: 0.15, id: 'cap', x: 0.7, xk: -4, y: 0.5, yk: 0.5, z: 1 }
 
 			game.player.back ('captain');
-			game.create.hp = { i: game.i.cap_hp, o: game.o.cap, wk: 5.7, x: 0.5, xk: -2, y: 0.02 }
+			game.create.hp = { i: game.i.cap_hp, o: game.o.cap, wk: 5.7, x: 0.5, xk: 0.5, y: 0.02 }
 			game.create.hp = { o: game.o.hero };
 		},
 
