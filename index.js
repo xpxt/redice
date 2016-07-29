@@ -144,15 +144,19 @@ var game =
 			
 			cap.hit = function ()
 			{
-				if (!cap.moved)
+
+
+				if (Math.sqrt (Math.pow (cap.x - game.o.hero.x, 2) + Math.pow (cap.y - game.o.hero.y, 2)) < 0.3 * cap.h)
 				{
+					game.o.hero.hp = (game.o.hero.hp > 0) ? game.o.hero.hp - cap.dmg : game.o.hero.hp;
+
 					game.animate (cap, 'hit');
 					if (game.window.time - cap.time_hit0 > cap.time_hit1)
 					{
 						cap.time_hit0 = game.window.time;
 						game.play = { src: 'hit.ogg' }
 					}
-				} 
+				}
 			}
 
 			cap.move = function ()
@@ -172,7 +176,6 @@ var game =
 				} else
 				{
 					cap.moved = false;
-					game.o.hero.hp = (game.o.hero.hp > 0) ? game.o.hero.hp - cap.dmg : game.o.hero.hp;
 					if (game.o.hero.hp > 0) 
 					{
 						game.draw ();
@@ -185,7 +188,7 @@ var game =
 				if (game.window.time - cap.search_time0 > cap.search_time1)
 				{
 					cap.search_time0 = game.window.time;
-					cap.search_time1 = game.r (300, 1500, true);
+					cap.search_time1 = game.r (100, 1000, true);
 					cap.vx = game.o.hero.vx;
 					cap.vy = game.o.hero.vy;
 				}
@@ -462,7 +465,7 @@ var game =
 				{
 					hero.played = true;
 					game.play = { loop: true, soundtrack2: true, src: 'mac_active.ogg', volume: 0.15 }
-				}				
+				}
 			}
 
 			hero.keyup = function (event)
@@ -552,8 +555,9 @@ var game =
 		{
 			let hp = o;
 			hp.h = o.h || 0.05;
+			hp.i = o.i || game.i.hp;
 			hp.id = game.set.id (o);
-			hp.wk = 5;
+			hp.wk = o.wk || 5;
 			hp.x = o.x || 0.02;
 			hp.y = o.y || 0.05;
 			hp.z = game.set.z (o);
@@ -563,9 +567,9 @@ var game =
 				let context = game.canvas.context;
 				context.imageSmoothingEnabled = o.aa || false;
 				let hwxy = game.get.hwxy (hp);
-				let h = game.i.hp.naturalHeight;
-				let w = game.i.hp.naturalWidth * game.o.hero.hp;
-				context.drawImage (game.i.hp, 0, 0, w, h, hwxy.x, hwxy.y, hwxy.w * game.o.hero.hp, hwxy.h);
+				let h = hp.i.naturalHeight;
+				let w = hp.i.naturalWidth * hp.o.hp;
+				context.drawImage (hp.i, 0, 0, w, h, hwxy.x, hwxy.y, hwxy.w * hp.o.hp, hwxy.h);
 			}
 
 			hp.draw ();
@@ -914,7 +918,7 @@ var game =
 			game.create.door = { act: function () { game.play = { src: 'door_box_check.ogg', volume: 0.2 } }, h: 0.1, i0: game.i.door_box, i1: game.i.door_box, tip: 'Press W to open', use: function () { game.play = { src: 'door_box.ogg', volume: 0.5 }; game.player.exit ('begin'); game.scene.ship (); }, wk: 0.29, x: 0.5, xk: 10, y: 0.5, yk: -1, z: 1 }
 
 			game.player.back ('begin');
-			game.create.hp = {}
+			game.create.hp = { o: game.o.hero };
 		},
 
 		captain: function ()
@@ -931,7 +935,7 @@ var game =
 			game.create.cap = { h: 0.15, x: 0.7, xk: -4, y: 0.5, yk: 0.5, z: 1 };
 
 			game.player.back ('captain');
-			game.create.hp = {}
+			game.create.hp = { o: game.o.hero };
 		},
 
 		gameover: function ()
@@ -1025,7 +1029,7 @@ var game =
 			game.create.door = { h: 0.06, i0: game.i.door_ship, i1: game.i.door_ship, tip: 'Captain bridge', use: function () { game.player.exit ('ship'); game.scene.captain (); }, wk: 0.7, x: 0.5, xk: 10, y: 0.542, yk: 0, z: 1 }
 
 			game.player.back ('ship');
-			game.create.hp = {}
+			game.create.hp = { o: game.o.hero };
 		},
 
 		start: function ()
@@ -1146,6 +1150,7 @@ game.load.i =
 	box_in: 'box_in.png',
 
 	cap: 'cap.png',
+	cap_hp: 'cap_hp.png',
 	cap_hit0: 'cap_hit0.png', cap_hit1: 'cap_hit1.png', cap_hit2: 'cap_hit2.png',
 	cap_walk0: 'cap_walk0.png', cap_walk1: 'cap_walk1.png',
 
