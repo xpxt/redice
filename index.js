@@ -118,7 +118,9 @@ var game =
 					time: 0
 				},
 			}
+			cap.enemy = true;
 			cap.dmg = 0.005;
+			cap.hp = 1;
 			cap.i = o.i || game.i.cap;
 			cap.id = game.set.id (o);
 			cap.moved = false;
@@ -133,6 +135,15 @@ var game =
 			cap.xk = 0.5;
 			cap.yk = -0.3;
 			cap.z = game.set.z (o);
+
+			cap.death = function ()
+			{
+				if (cap.hp <= 0)
+				{
+					delete game.o[cap.id];
+					game.draw ();
+				}
+			}
 
 			cap.draw = function ()
 			{
@@ -196,6 +207,7 @@ var game =
 
 			cap.tick = function ()
 			{
+				cap.death ();
 				cap.hit ();
 				cap.move ();
 				cap.search ();	
@@ -589,8 +601,11 @@ var game =
 					time: 0
 				}
 			}
+			katana.dmg = 0.001;
 			katana.i = o.i || game.i.katana0;
 			katana.id = game.set.id (o);
+			katana.time_hit0 = game.window.time;
+			katana.time_hit1 = 300;
 			katana.z = game.set.z (o);
 
 			katana.draw = function ()
@@ -616,6 +631,22 @@ var game =
 			{
 				if (katana.hited)
 				{
+					for (let id in game.o)
+					{
+						let o = game.o[id];
+						if (o.enemy)
+						{
+							if (Math.sqrt (Math.pow (game.o.hero.x - o.x, 2) + Math.pow (game.o.hero.x - o.x, 2)) < katana.h)
+							{
+								o.hp -= (o.hp >= 0) ? katana.dmg : 0;
+								if (game.window.time - katana.time_hit0 > katana.time_hit1)
+								{
+									katana.time_hit0 = game.window.time;
+									game.play = { src: 'katana.ogg' }
+								}
+							}
+						}
+					}
 					katana.equip ();
 					game.animate (katana, 'hit');
 				}
@@ -930,11 +961,12 @@ var game =
 
 			game.create.hero = { h: 0.1, i: game.i.jane_up, room: { h: 0.62, show: false, wk: 2.2, x: 0.5, xk: 0.5, y: 0.38  }, x: 0.5, y: 0.8 }
 
-			game.create.katana = {};
+			game.create.katana = {}
 
-			game.create.cap = { h: 0.15, x: 0.7, xk: -4, y: 0.5, yk: 0.5, z: 1 };
+			game.create.cap = { h: 0.15, id: 'cap', x: 0.7, xk: -4, y: 0.5, yk: 0.5, z: 1 }
 
 			game.player.back ('captain');
+			game.create.hp = { i: game.i.cap_hp, o: game.o.cap, wk: 5.7, x: 0.5, xk: -2, y: 0.02 }
 			game.create.hp = { o: game.o.hero };
 		},
 
