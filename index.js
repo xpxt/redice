@@ -336,7 +336,7 @@ var game =
 
 				left:
 				{
-					i: [game.i.jane_left, game.i.jane_left_go0, game.i.jane_left_go1, game.i.jane_left_go2, game.i.jane_left_go3],
+					i: [game.i.jane_down_go0, game.i.jane_down_go1],
 					interval: 75,
 					step: 0,
 					time: 0
@@ -344,7 +344,7 @@ var game =
 
 				right:
 				{
-					i: [game.i.jane_right, game.i.jane_right_go0, game.i.jane_right_go1, game.i.jane_right_go2, game.i.jane_right_go3],
+					i: [game.i.jane_down_go0, game.i.jane_down_go1],
 					interval: 75,
 					step: 0,
 					time: 0
@@ -352,7 +352,7 @@ var game =
 
 				up:
 				{
-					i: [game.i.jane_up_go0, game.i.jane_up_go1],
+					i: [game.i.jane_down_go0, game.i.jane_down_go1],
 					interval: 75,
 					step: 0,
 					time: 0
