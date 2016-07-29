@@ -605,6 +605,7 @@ var game =
 				katana.xk = game.o.hero.xk;
 				katana.y = game.o.hero.y;
 				katana.yk = game.o.hero.yk;
+				katana.z = game.o.hero.z + 1;
 			}
 
 			katana.hit = function ()
