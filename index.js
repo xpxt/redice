@@ -333,7 +333,7 @@ var game =
 
 				left:
 				{
-					i: [game.i.jane_left_go0, game.i.jane_left_go1, game.i.jane_left_go2, game.i.jane_left_go3],
+					i: [game.i.jane_left, game.i.jane_left_go0, game.i.jane_left_go1, game.i.jane_left_go2, game.i.jane_left_go3],
 					interval: 75,
 					step: 0,
 					time: 0
@@ -341,7 +341,7 @@ var game =
 
 				right:
 				{
-					i: [game.i.jane_right_go0, game.i.jane_right_go1, game.i.jane_right_go2, game.i.jane_right_go3],
+					i: [game.i.jane_right, game.i.jane_right_go0, game.i.jane_right_go1, game.i.jane_right_go2, game.i.jane_right_go3],
 					interval: 75,
 					step: 0,
 					time: 0
@@ -359,7 +359,7 @@ var game =
 			hero.hp = 1;
 			hero.i = o.i || game.i.jane;
 			hero.id = 'hero';
-			hero.key = { down: 0, left: 0, moves: 0, right: 0, up: 0 };
+			hero.key = { attacks: 0, down: 0, left: 0, moves: 0, right: 0, up: 0 };
 			hero.played = false;
 			hero.room = o.room || { h: 1, show: true, w: 1, x: 0, y: 0 };
 			hero.speed = o.speed || 0.004;
@@ -438,6 +438,14 @@ var game =
 						if (Math.abs (hero.vx - hero.x) < Math.abs (hero.vy - hero.y)) hero.animation.animate = 'up';
 					}
 				},
+			}
+
+			hero.hit = function ()
+			{
+				if (hero.key.attacks)
+				{
+					game.animate (hero, 'hit');
+				}
 			}
 
 			hero.keydown = function (event)
@@ -531,6 +539,7 @@ var game =
 				hero.go.left ();
 				hero.go.right ();
 				hero.go.up ();
+				hero.hit ();
 				hero.move ();
 
 			}
@@ -561,6 +570,71 @@ var game =
 
 			hp.draw ();
 			game.o[hp.id] = hp;		
+		},
+
+		set katana (o)
+		{
+			let katana = o;
+			katana.animation =
+			{
+				hit:
+				{
+					i: [game.i.katana0, game.i.katana1, game.i.katana2, game.i.katana3, game.i.katana2, game.i.katana1 ],
+					interval: 75,
+					step: 0,
+					time: 0
+				}
+			}
+			katana.i = o.i || game.i.katana0;
+			katana.id = game.set.id (o);
+			katana.z = game.set.z (o);
+
+			katana.draw = function ()
+			{
+				let context = game.canvas.context;
+				context.imageSmoothingEnabled = o.aa || false;
+				let hwxy = game.get.hwxy (katana);
+				context.drawImage (katana.i, hwxy.x, hwxy.y, hwxy.w, hwxy.h);
+			}
+
+			katana.equip = function ()
+			{
+				katana.h = game.o.hero.h;
+				katana.wk = 1.46;
+				katana.x = game.o.hero.x;
+				katana.xk = game.o.hero.xk;
+				katana.y = game.o.hero.y;
+				katana.yk = game.o.hero.yk;
+			}
+
+			katana.hit = function ()
+			{
+				if (katana.hited)
+				{
+					katana.equip ();
+					game.animate (katana, 'hit');
+				}
+			}
+
+			katana.mousedown = function (event)
+			{
+				katana.hited = true;
+			}
+
+			katana.mouseup = function (event)
+			{
+				katana.hited = false;
+			}
+
+			katana.tick = function ()
+			{
+				katana.equip ();
+				katana.hit ();
+			}
+
+			katana.draw ();
+			katana.equip ();
+			game.o[katana.id] = katana;		
 		},
 
 		set machine (o)
@@ -851,6 +925,8 @@ var game =
 
 			game.create.hero = { h: 0.1, i: game.i.jane_up, room: { h: 0.62, show: false, wk: 2.2, x: 0.5, xk: 0.5, y: 0.38  }, x: 0.5, y: 0.8 }
 
+			game.create.katana = {};
+
 			game.create.cap = { h: 0.15, x: 0.7, xk: -4, y: 0.5, yk: 0.5, z: 1 };
 
 			game.player.back ('captain');
@@ -924,7 +1000,7 @@ var game =
 
 		load: function ()
 		{
-			game.scene.intro ();
+			game.scene.captain ();
 		},
 
 		mac: function ()
@@ -1085,6 +1161,7 @@ game.load.i =
 	jane: 'jane.png',
 	jane_down: 'jane_down.png',
 	jane_down_go0: 'jane_down_go0.png', jane_down_go1: 'jane_down_go1.png',
+	jane_hit: 'jane_hit.png',
 	jane_left: 'jane_left.png',
 	jane_left_go0: 'jane_left_go0.png', jane_left_go1: 'jane_left_go1.png', jane_left_go2: 'jane_left_go2.png', jane_left_go3: 'jane_left_go3.png',
 	jane_right: 'jane_right.png',
@@ -1092,6 +1169,8 @@ game.load.i =
 	jane_up: 'jane_up.png',
 	jane_up_go0: 'jane_up_go0.png', jane_up_go1: 'jane_up_go1.png',
 	
+	katana0: 'katana0.png', katana1: 'katana1.png', katana2: 'katana2.png', katana3: 'katana3.png',
+
 	logo: 'logo.png',
 	
 	mac: 'mac.png',
