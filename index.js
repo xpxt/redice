@@ -129,6 +129,8 @@ var game =
 			cap.speed = 0.02;
 			cap.time_hit0 = game.window.time;
 			cap.time_hit1 = 300;
+			cap.time_hook0 = game.window.time;
+			cap.time_hook1 = 5000;
 			cap.vx = game.o.hero.x;
 			cap.vy = game.o.hero.y;
 			cap.wk = 0.8;
@@ -167,6 +169,18 @@ var game =
 						cap.time_hit0 = game.window.time;
 						game.play = { src: 'hit.ogg' }
 					}
+				}
+			}
+
+			cap.hook = function ()
+			{
+				if (game.window.time - cap.time_hook0 > cap.time_hook1)
+				{
+					cap.time_hook0 = game.window.time;
+					let c = game.get.hwxy (cap);
+					let x = c.x;
+
+					game.create.hook = { x: cap.x }
 				}
 			}
 
@@ -385,7 +399,7 @@ var game =
 			hero.xk = o.xk || 0.5;
 			hero.y = o.y || 0.5;
 			hero.yk = o.yk || -1;
-			hero.z = o.z || 1;
+			hero.z = o.z || 2;
 
 			hero.action = function ()
 			{
@@ -566,7 +580,10 @@ var game =
 		set hook (o)
 		{
 			let hook = o;
+			hook.i = o.i || game.i.hook;
 			hook.id = game.set.id (o);
+			hook.x = o.x;
+			hook.y = o.y;
 			hook.z = game.set.z (o);
 
 			hook.draw = function ()
@@ -575,6 +592,15 @@ var game =
 				context.imageSmoothingEnabled = o.aa || false;
 				let hwxy = game.get.hwxy (hook);
 				context.drawImage (hook.i, hwxy.x, hwxy.y, hwxy.w, hwxy.h);
+			}
+
+			hook.move = function ()
+			{
+			}
+
+			hook.tick = function ()
+			{
+				hook.move ();
 			}
 
 			hook.draw ();
@@ -642,7 +668,7 @@ var game =
 				katana.xk = game.o.hero.xk;
 				katana.y = game.o.hero.y;
 				katana.yk = game.o.hero.yk;
-				katana.z = game.o.hero.z + 1;
+				katana.z = game.o.hero.z;
 			}
 
 			katana.hit = function ()
@@ -1211,6 +1237,8 @@ game.load.i =
 	door_ship: 'door_ship.png',
 
 	enter: 'enter.png',
+
+	hook: 'hook.png',
 
 	hp: 'hp.png',
 
