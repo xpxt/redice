@@ -563,6 +563,24 @@ var game =
 			game.o[hero.id] = hero;
 		},
 
+		set hook (o)
+		{
+			let hook = o;
+			hook.id = game.set.id (o);
+			hook.z = game.set.z (o);
+
+			hook.draw = function ()
+			{
+				let context = game.canvas.context;
+				context.imageSmoothingEnabled = o.aa || false;
+				let hwxy = game.get.hwxy (hook);
+				context.drawImage (hook.i, hwxy.x, hwxy.y, hwxy.w, hwxy.h);
+			}
+
+			hook.draw ();
+			game.o[hook.id] = hook;	
+		},
+
 		set hp (o)
 		{
 			let hp = o;
