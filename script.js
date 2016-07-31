@@ -44,7 +44,7 @@ const g =
 
 			b.action = function (e)
 			{
-				if (g.get.mousein (b, e))
+				if (g.get.pin (b, e))
 				{
 					if (b.i2) { b.i = b.i2; b.d (); }
 					b.act ();
@@ -63,7 +63,7 @@ const g =
 
 			b.mousein = function (e)
 			{
-				if (g.get.mousein (b, e))
+				if (g.get.pin (b, e))
 				{
 					if (!b.over)
 					{
@@ -162,6 +162,7 @@ const g =
 				room.box = _.box || [];
 				room.create = false;
 				room.debug = _.debug || false;
+				room.type = 'room';
 				room.z = 0;
 
 				room.begin_create = function ()
@@ -259,10 +260,13 @@ const g =
 							s01 = s0 / s1;
 							let x = (u.x + s01 * u.vx) / (1 + s01);
 							let y = (u.y + s01 * u.vy) / (1 + s01);
-							u.c ();
-							u.x = x;
-							u.y = y;
-							u.d ();
+							if (g.get.inroom ({ h: u.h, hk: u.hk, w: u.w, wk: u.wk, x: x, xk: u.xk, y: y, yk: u.yk }))
+							{
+								u.c ();
+								u.x = x;
+								u.y = y;
+								u.d ();
+							}
 						}
 					}
 				}
@@ -370,10 +374,42 @@ const g =
 								(Math.abs (a.y - b.y + 0.5 * (a.h - b.h)) <= 0.5 * Math.abs (a.h + b.h)));
 		},
 
-		mousein: function (o, e)
+		inroom: function (O)
+		{
+			for (let id in g.o)
+			{
+				let o = g.o[id];
+				if (o.type == 'room')
+				{
+					for (let box of o.box)
+					{
+						if (g.get.in (O, box)) return true;
+					}
+				}
+			}
+			return false;
+		},
+
+		pin: function (o, p)
 		{
 			let hwxy = g.get.hwxy (o);
-			return ((e.x >= hwxy.x) && (e.x <= hwxy.x + hwxy.w) && (e.y >= hwxy.y) && (e.y <= hwxy.y + hwxy.h));
+			return ((p.x >= hwxy.x) && (p.x <= hwxy.x + hwxy.w) && (p.y >= hwxy.y) && (p.y <= hwxy.y + hwxy.h));
+		},
+
+		pinroom: function (x, y)
+		{
+			for (let id in g.o)
+			{
+				let o = g.o[id];
+				if (o.type == 'room')
+				{
+					for (let box of o.box)
+					{
+						if (g.get.pin (box, { x: x * g.g.width, y: y * g.g.height })) return true;
+					}
+				}
+			}
+			return false;
 		},
 
 		r: function (a, b, c)
@@ -443,7 +479,7 @@ const g =
 		}
 	},
 
-	tick: 50,
+	tick: 35,
 
 	time: 0,
 
@@ -473,12 +509,12 @@ g.s.l = function ()
 {
 	for (let i = 0; i <= 5; i++)
 	{
-		g.c = g._.a ({ a: g.a.hero.color, h: 0.1, wk: 0.42, x: g.get.r (), y: g.get.r () });
+		//g.c = g._.a ({ a: g.a.hero.color, h: 0.1, wk: 0.42, x: g.get.r (), y: g.get.r () });
 	}
 
-	g.c = g._.b ({ act: function () { g.log = 'act'; }, cursor: true, h: 0.5, i: g.i.hero, i1: g.i.hero_red, i2: g.i.hero_green, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 0.5, z: 1 });
+	//g.c = g._.b ({ act: function () { g.log = 'act'; }, cursor: true, h: 0.5, i: g.i.hero, i1: g.i.hero_red, i2: g.i.hero_green, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 0.5, z: 1 });
 
 	g.c = g._.room ({ box: [{h: 0.31, w: 0.27, x: 0.34, y: 0.21}, {h: 0.4, w: 0.14, x: 0.41, y: 0.43}, {h: 0.24, w: 0.4, x: 0.38, y: 0.68}], debug: true });
 
-	g.c = g._.u ({ h: 0.2, i: g.i.hero, wk: 0.42, x: 0.5, y: 0.5, z: 1});
+	g.c = g._.u ({ h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 0.5, z: 1});
 }
