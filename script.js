@@ -98,6 +98,13 @@ const g =
 			return b;
 		},
 
+		box: function (_)
+		{
+			let box = g._.i;
+
+			return box;
+		},
+
 		i: function (_)
 		{
 			let i = g._.o (_);
@@ -275,6 +282,7 @@ const g =
 				{
 					u.move ();
 				}
+
 			return u;
 		}
 	},
