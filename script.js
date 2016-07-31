@@ -514,7 +514,7 @@ g.s.l = function ()
 
 	//g.c = g._.b ({ act: function () { g.log = 'act'; }, cursor: true, h: 0.5, i: g.i.hero, i1: g.i.hero_red, i2: g.i.hero_green, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 0.5, z: 1 });
 
-	g.c = g._.room ({ box: [{h: 0.31, w: 0.27, x: 0.34, y: 0.21}, {h: 0.4, w: 0.14, x: 0.41, y: 0.43}, {h: 0.24, w: 0.4, x: 0.38, y: 0.68}], debug: true });
+	g.c = g._.room ({ box: [{h: 0.31, w: 0.27, x: 0.34, y: 0.21}, {h: 0.4, w: 0.14, x: 0.41, y: 0.43}, {h: 0.24, w: 0.4, x: 0.38, y: 0.68}, {h: 0.74, w: 0.24, x: 0.65, y: 0.07} ], debug: true });
 
 	g.c = g._.u ({ h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
 }
