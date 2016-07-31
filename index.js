@@ -2,6 +2,8 @@
 
 var game =
 {
+	a: {},
+
 	animate: function (o, a)
 	{
 		o.animation[a].time += game.window.tick;
@@ -130,7 +132,7 @@ var game =
 			cap.time_hit0 = game.window.time;
 			cap.time_hit1 = 300;
 			cap.time_hook0 = game.window.time;
-			cap.time_hook1 = 5000;
+			cap.time_hook1 = 1000;
 			cap.vx = game.o.hero.x;
 			cap.vy = game.o.hero.y;
 			cap.wk = 0.8;
@@ -177,10 +179,8 @@ var game =
 				if (game.window.time - cap.time_hook0 > cap.time_hook1)
 				{
 					cap.time_hook0 = game.window.time;
-					let c = game.get.hwxy (cap);
-					let x = c.x;
 
-					game.create.hook = { x: cap.x }
+					game.create.hook = { h: 0.04, vx: game.o.hero.x, vy: game.o.hero.y, wk: 1, x: cap.x, xk: cap.xk + 1.4, y: cap.y, yk: cap.yk - 3.6, z: cap.z }
 				}
 			}
 
@@ -223,6 +223,7 @@ var game =
 			{
 				cap.death ();
 				cap.hit ();
+				cap.hook ();
 				cap.move ();
 				cap.search ();	
 				cap.walk ();
@@ -580,8 +581,11 @@ var game =
 		set hook (o)
 		{
 			let hook = o;
+			hook.dmg = 0.1;
+			hook.hited = false;
 			hook.i = o.i || game.i.hook;
 			hook.id = game.set.id (o);
+			hook.s = 0.01;
 			hook.x = o.x;
 			hook.y = o.y;
 			hook.z = game.set.z (o);
@@ -594,12 +598,38 @@ var game =
 				context.drawImage (hook.i, hwxy.x, hwxy.y, hwxy.w, hwxy.h);
 			}
 
+			hook.hit = function ()
+			{
+				let a = { x: hook.x, y: hook.y }
+				let b = { x: hook.vx, y: hook.vy }
+				if (!hook.hited)
+				{
+					if (game.get.r (a, b) < 0.008)
+					{
+						hook.hited = true;
+						game.o.hero.hp -= hook.dmg;
+					}		
+				}
+			}
+
 			hook.move = function ()
 			{
+				let a = { x: hook.x, y: hook.y }
+				let b = { x: hook.vx, y: hook.vy }
+				if (Math.abs (a.x - b.x) > 0.01)
+				{
+					let v = game.get.v (a, b, hook.s);
+					hook.x = v.x;
+					hook.y = v.y;
+				} else
+				{
+					delete game.o[hook.id];
+				}
 			}
 
 			hook.tick = function ()
 			{
+				hook.hit ();
 				hook.move ();
 			}
 
@@ -843,6 +873,7 @@ var game =
 		}
 	},
 
+/*
 	draw: function ()
 	{
 		game.canvas.clear ();
@@ -857,6 +888,7 @@ var game =
 			}
 		}
 	},
+*/
 
 	get:
 	{
@@ -883,6 +915,23 @@ var game =
 		{
 			let hwxy = game.get.hwxy (o);
 			return (e.x >= hwxy.x && e.x <= hwxy.x + hwxy.w && e.y >= hwxy.y && e.y <= hwxy.y + hwxy.h);
+		},
+
+		r: function (a, b)
+		{
+			return Math.sqrt (Math.pow (a.x - b.x, 2) + Math.pow (a.y - b.y, 2));
+		},
+
+		v: function (a, b, s)
+		{
+			let v = {};
+			let r = Math.sqrt (Math.pow (a.x - b.x, 2) + Math.pow (a.y - b.y, 2));
+			let r0 = s;
+			let r1 = r - r0;
+			let rk = r0 / r1;
+			v.x = (a.x + rk * b.x) / (1 + rk);
+			v.y = (a.y + rk * b.y) / (1 + rk);
+			return v;
 		},
 
 		x: function (o)
@@ -948,6 +997,7 @@ var game =
 		scene: {}
 	},
 
+/*
 	r: function (a, b, c)
 	{
 		let r = Math.random ();
@@ -1138,7 +1188,8 @@ var game =
 
 		}
 	},
-
+*/
+/*
 	set:
 	{
 		id: function (o)
@@ -1154,10 +1205,10 @@ var game =
 			return z;
 		}
 	},
-
+*/
 	soundtrack: { pause: function () { return; } },
 	soundtrack2: { pause: function () { return; } },
-
+/*
 	update: function (event)
 	{
 		for (let id in game.o)
@@ -1171,7 +1222,8 @@ var game =
 			}
 		}
 	},
-
+	*/
+/*
 	window:
 	{
 		load: function ()
@@ -1220,7 +1272,8 @@ var game =
 
 	z: 0
 }
-
+*/
+/*
 game.load.i =
 {
 	box_in: 'box_in.png',
@@ -1266,3 +1319,4 @@ game.load.i =
 }
 
 window.onload = game.run;
+*/
