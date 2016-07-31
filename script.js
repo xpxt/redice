@@ -244,8 +244,8 @@ const g =
 
 				u.mousedown = function (e)
 				{
-					u.vx = e.x / g.g.width;
-					u.vy = e.y / g.g.height;
+					u.vx = e.x / g.g.width - u.xk * u.w;
+					u.vy = e.y / g.g.height - u.yk * u.h;
 				}
 
 				u.move = function ()
@@ -260,7 +260,7 @@ const g =
 							s01 = s0 / s1;
 							let x = (u.x + s01 * u.vx) / (1 + s01);
 							let y = (u.y + s01 * u.vy) / (1 + s01);
-							if (g.get.inroom ({ h: u.h, hk: u.hk, w: u.w, wk: u.wk, x: x, xk: u.xk, y: y, yk: u.yk }))
+							if (g.get.pinroom (x + u.xk * u.w, y + u.yk * u.h))
 							{
 								u.c ();
 								u.x = x;
@@ -374,7 +374,7 @@ const g =
 								(Math.abs (a.y - b.y + 0.5 * (a.h - b.h)) <= 0.5 * Math.abs (a.h + b.h)));
 		},
 
-		inroom: function (O)
+		inroom: function (u)
 		{
 			for (let id in g.o)
 			{
@@ -383,7 +383,7 @@ const g =
 				{
 					for (let box of o.box)
 					{
-						if (g.get.in (O, box)) return true;
+						if (g.get.in (u, box)) return true;
 					}
 				}
 			}
@@ -451,7 +451,7 @@ const g =
 
 		w: function (o) { return (o.wk) ? o.wk * o.h * g.g.height / g.g.width : o.w },
 
-		x: function (o) { return (o.xk) ? o.x - o.xk * o.w : o.x},
+		x: function (o) { return (o.xk) ? o.x - o.xk * o.w : o.x },
 
 		y: function (o) { return (o.yk) ? o.y - o.yk * o.h : o.y },
 	},
@@ -516,5 +516,5 @@ g.s.l = function ()
 
 	g.c = g._.room ({ box: [{h: 0.31, w: 0.27, x: 0.34, y: 0.21}, {h: 0.4, w: 0.14, x: 0.41, y: 0.43}, {h: 0.24, w: 0.4, x: 0.38, y: 0.68}], debug: true });
 
-	g.c = g._.u ({ h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 0.5, z: 1});
+	g.c = g._.u ({ h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
 }
