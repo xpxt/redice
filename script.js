@@ -189,7 +189,6 @@ const g =
 					} else
 					{
 						room.texture += (room.texture < Object.keys (g.i).length - 1) ? 1 : 0;
-						g.log = room.texture;
 					}
 				}
 
@@ -714,9 +713,9 @@ g.s.test = function ()
 {
 	g.wipe ();
 
-	g.c = g._.room ({ box: [{h:0.62,w:0.42,x:0.27,y:0.24,i:g.i.grass,texture:true},{h:0.37,w:0.23,x:0.69,y:0.38,i:g.i.grass,texture:true},{h:0.13,w:0.22,x:0.18,y:0.73,i:g.i.roadh,texture:false},{h:0.13,w:0.18,x:0,y:0.73,i:g.i.roadh,texture:false}], debug: true });
+	g.c = g._.room ({ box: [{h:0.62,w:0.42,x:0.27,y:0.24,i:g.i.grass,texture:true},{h:0.37,w:0.23,x:0.69,y:0.38,i:g.i.grass,texture:true},{h:0.13,w:0.22,x:0.18,y:0.73,i:g.i.roadh,texture:false},{h:0.13,w:0.18,x:0,y:0.73,i:g.i.roadh,texture:false},{h:0.25,w:0.23,x:0.69,y:0.75,i:g.i.grass,texture:true}], debug: true });
 
-	g.c = g._.block ({ box: [{h:0.12,w:0.02,x:0.4,y:0.74,i:g.i.wall,texture:true}], debug: true });
+	g.c = g._.block ({ box: [{h:0.12,w:0.02,x:0.4,y:0.74,i:g.i.wall,texture:true},{h:0.14,w:0.31,x:0.69,y:0.24,i:g.i.road,texture:true},{h:0.62,w:0.08,x:0.92,y:0.38,i:g.i.road,texture:true},{h:0.73,w:0.27,x:0,y:0,i:g.i.road,texture:true},{h:0.14,w:0.69,x:0,y:0.86,i:g.i.wall,texture:true},{h:0.24,w:0.73,x:0.27,y:0,i:g.i.road,texture:true}], debug: true });
 
 	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
 
