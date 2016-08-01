@@ -165,6 +165,7 @@ const g =
 				room.create = false;
 				room.debug = _.debug || false;
 				room.invert = _.invert || false;
+				room.texture = 0;
 				room.textured = false;
 				room.type = 'room';
 				room.z = 0;
@@ -180,12 +181,28 @@ const g =
 					}
 				}
 
+				room.change = function (e)
+				{
+					if (e.wheelDelta > 0)
+					{
+						room.texture += (room.texture > 0) ? -1 : 0;
+					} else
+					{
+						room.texture += (room.texture < Object.keys (g.i).length - 1) ? 1 : 0;
+						g.log = room.texture;
+					}
+				}
+
 				room.creating = function (e)
 				{
 					if (room.create)
 					{
-						room.box[room.box.length - 1].h = Math.abs (room.box[room.box.length - 1].y - e.y / g.g.height);
-						room.box[room.box.length - 1].w = Math.abs (room.box[room.box.length - 1].x - e.x / g.g.width);
+						let box = room.box[room.box.length - 1];
+							box.h = Math.abs (box.y - e.y / g.g.height);
+							box.w = Math.abs (box.x - e.x / g.g.width);
+							box.i = g.get.inum (room.texture);
+							box.texture = room.textured;
+						room.texturing (true);
 						g.g.clear ();
 						g.g.d ();
 					}
@@ -212,7 +229,14 @@ const g =
 						room.box[room.box.length - 1].h = parseFloat (Math.abs (room.box[room.box.length - 1].y - e.y / g.g.height).toFixed (2));
 						room.box[room.box.length - 1].w = parseFloat (Math.abs (room.box[room.box.length - 1].x - e.x / g.g.width).toFixed (2));
 						room.d ();
-						g.log = room.box[room.box.length - 1];
+
+						//debug
+
+						let b = room.box[room.box.length - 1];
+						let box = {h: b.h, w: b.w, x: b.x, y: b.y };
+							box.i = g.get.inumname (room.texture);
+							box.texture = room.textured;
+						g.log = g.get.json (box);
 					}
 				}
 
@@ -239,19 +263,33 @@ const g =
 					room.creating (e);
 				}
 
-				room.texture = function ()
+				room.texturing = function (debug)
 				{
-					for (let box of room.box)
+					if (debug)
 					{
-						if (box.i)
+						let box = room.box[room.box.length - 1];
+							box.texture = room.textured;
+						g.c = g._.i (box);
+					} else
+					{
+						for (let box of room.box)
 						{
-							g.c = g._.i (box);
+							if (box.i)
+							{
+								box.texture = room.textured;
+								g.c = g._.i (box);
+							}
 						}
 					}
 				}
 
+				room.wheel = function (e)
+				{
+					room.change (e);
+				}
+
 			room.d ();
-			room.texture ();
+			room.texturing ();
 			return room;
 		},
 
@@ -387,6 +425,7 @@ const g =
 			window.onmousemove = g.u;
 			window.onmouseup = g.u;
 			window.onresize = g.g.resize;
+			window.onwheel = g.u;
 			g.e.tick = g.u;
 		},
 
@@ -462,6 +501,26 @@ const g =
 								(Math.abs (a.y - b.y + 0.5 * (a.h - b.h)) <= 0.5 * Math.abs (a.h + b.h)));
 		},
 
+		inum (n)
+		{
+			let i = 0;
+			for (let id in g.i)
+			{
+				if (i == n) { return g.i[id]; }
+				i++;
+			}
+		},
+
+		inumname (n)
+		{
+			let i = 0;
+			for (let id in g.i)
+			{
+				if (i == n) { return 'g.i.' + id; }
+				i++;
+			}
+		},
+
 		inblock: function (u)
 		{
 			for (let id in g.o)
@@ -492,6 +551,18 @@ const g =
 				}
 			}
 			return false;
+		},
+
+		json: function (o)
+		{
+			let r = '';
+			let t = JSON.stringify (o);
+			for (let i in t)
+			{
+				let l = t[i];
+				if (l != '"') { r += l; }
+			}
+			return r;
 		},
 
 		pin: function (o, p)
@@ -624,7 +695,7 @@ const g =
 	}
 }
 
-g.get.i = [ 'button0', 'button1', 'button2', 'hero', 'hero_red', 'hero_green', 'road', 'wall' ];
+g.get.i = [ 'button0', 'button1', 'button2', 'grass', 'hero', 'hero_red', 'hero_green', 'road', 'roadh', 'roadv', 'wall' ];
 
 window.onload = g.l;
 
@@ -632,12 +703,12 @@ g.s.l = function ()
 {
 	for (let i = 0; i <= 5; i++)
 	{
-		g.c = g._.a ({ a: g.a.hero.color, h: 0.1, wk: 0.42, x: g.get.r (), y: g.get.r (), z: 1 });
+		//g.c = g._.a ({ a: g.a.hero.color, h: 0.1, wk: 0.42, x: g.get.r (), y: g.get.r (), z: 1 });
 	}
 
-	g.c = g._.b ({ act: function () { g.log = 'act'; }, cursor: true, h: 0.1, i: g.i.button0, i1: g.i.button1, i2: g.i.button2, wk: 2, x: 0.5, xk: 0.5, y: 0.3, yk: 0.5, z: 2 });
+	g.c = g._.b ({ act: function () { g.log = 'act'; }, cursor: true, h: 0.05, i: g.i.button0, i1: g.i.button1, i2: g.i.button2, wk: 2, x: 0.95, xk: 0.5, y: 0.05, yk: 0.5, z: 2 });
 
-	g.c = g._.room ({ box: [{h: 0.28, i: g.i.road, texture: true, w: 0.33, x: 0.33, y: 0.28}, {h: 0.2, i: g.i.road, w: 0.22, x: 0.38, y: 0.53}], debug: true });
+	g.c = g._.room ({ box: [], debug: true });
 
 	g.c = g._.block ({ box: [{h: 0.07, i: g.i.wall, w: 0.05, x: 0.55, y: 0.43, z: 1 }], debug: true });
 
