@@ -276,7 +276,6 @@ const g =
 						{
 							if (box.i)
 							{
-								box.texture = room.textured;
 								g.c = g._.i (box);
 							}
 						}
@@ -672,7 +671,7 @@ const g =
 		}
 	},
 
-	tick: 40,
+	tick: 30,
 
 	time: 0,
 
@@ -692,27 +691,34 @@ const g =
 	{
 		g.o = {};
 		g.g.clear ();
+		window.document.body.style.cursor = 'default';
 	}
 }
 
-g.get.i = [ 'button0', 'button1', 'button2', 'grass', 'hero', 'hero_red', 'hero_green', 'road', 'roadh', 'roadv', 'wall' ];
+g.get.i = [ '0', 'button0', 'button1', 'button2', 'grass', 'hero', 'hero_red', 'hero_green', 'road', 'roadh', 'roadv', 'wall' ];
 
 window.onload = g.l;
 
 g.s.l = function ()
 {
-	for (let i = 0; i <= 5; i++)
-	{
-		//g.c = g._.a ({ a: g.a.hero.color, h: 0.1, wk: 0.42, x: g.get.r (), y: g.get.r (), z: 1 });
-	}
+	g.s.menu ();
+}
 
-	g.c = g._.b ({ act: function () { g.log = 'act'; }, cursor: true, h: 0.05, i: g.i.button0, i1: g.i.button1, i2: g.i.button2, wk: 2, x: 0.95, xk: 0.5, y: 0.05, yk: 0.5, z: 2 });
+g.s.menu = function ()
+{
+	g.wipe ();
+	g.c = g._.b ({ act: function () { g.s.test (); }, cursor: true, h: 0.1, i: g.i.button0, i1: g.i.button1, i2: g.i.button2, wk: 2, x: 0.5, xk: 0.5, y: 0.5, yk: 0.5, z: 2 });
+}
 
-	g.c = g._.room ({ box: [], debug: true });
+g.s.test = function ()
+{
+	g.wipe ();
 
-	g.c = g._.block ({ box: [{h: 0.07, i: g.i.wall, w: 0.05, x: 0.55, y: 0.43, z: 1 }], debug: true });
+	g.c = g._.room ({ box: [{h:0.62,w:0.42,x:0.27,y:0.24,i:g.i.grass,texture:true},{h:0.37,w:0.23,x:0.69,y:0.38,i:g.i.grass,texture:true},{h:0.13,w:0.22,x:0.18,y:0.73,i:g.i.roadh,texture:false},{h:0.13,w:0.18,x:0,y:0.73,i:g.i.roadh,texture:false}], debug: true });
 
-	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero_red, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
+	g.c = g._.block ({ box: [{h:0.12,w:0.02,x:0.4,y:0.74,i:g.i.wall,texture:true}], debug: true });
+
+	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
 
 	g.g.d ();
 }
