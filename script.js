@@ -229,7 +229,6 @@ const g =
 
 				room.keydown = function (e)
 				{
-					g.log = e.keyCode;
 					switch (e.keyCode)
 					{
 						case 66: if (room.invert) room.begin_create (); break;
@@ -257,7 +256,8 @@ const g =
 		{
 			let u = g._.i (_);
 				u.control = _.control || 'auto';
-				u.speed = _.speed || 0.01;
+				u.key = { d: 0, l: 0, r: 0, u: 0 }
+				u.speed = _.speed || 0.005;
 				u.vx = _.x || u.x;
 				u.vy = _.y || u.y;
 
@@ -267,6 +267,45 @@ const g =
 						v.x = x - u.xk * u.w;
 						v.y = y - u.yk * u.h;
 					return v;
+				}
+
+				u.keymove = function (x, y)
+				{
+					if (u.control == 'keyboard')
+					{
+						u.vy += (u.key.d) ? u.speed : 0;
+						u.vx += (u.key.l) ? -u.speed : 0;
+						u.vx += (u.key.r) ? u.speed : 0;
+						u.vy += (u.key.u) ? -u.speed : 0;
+					}
+				}
+
+				u.keydown = function (e)
+				{
+					if (u.control == 'keyboard')
+					{
+						switch (e.keyCode)
+						{
+							case 65: u.key.l = 1; break;
+							case 68: u.key.r = 1; break;
+							case 83: u.key.d = 1; break;
+							case 87: u.key.u = 1; break;
+						}
+					}
+				}
+
+				u.keyup = function (e)
+				{
+					if (u.control == 'keyboard')
+					{
+						switch (e.keyCode)
+						{
+							case 65: u.key.l = 0; break;
+							case 68: u.key.r = 0; break;
+							case 83: u.key.d = 0; break;
+							case 87: u.key.u = 0; break;
+						}
+					}
 				}
 
 				u.mouse = function (e)
@@ -309,6 +348,7 @@ const g =
 
 				u.tick = function ()
 				{
+					u.keymove ();
 					u.move ();
 				}
 
@@ -548,7 +588,7 @@ const g =
 		}
 	},
 
-	tick: 35,
+	tick: 40,
 
 	time: 0,
 
@@ -587,5 +627,5 @@ g.s.l = function ()
 
 	g.c = g._.block ({ box: [], debug: true });
 
-	g.c = g._.u ({ control: 'mouse', h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
+	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
 }
