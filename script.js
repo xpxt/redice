@@ -118,6 +118,7 @@ const g =
 			let i = g._.o (_);
 				i.h = g.get.h (_);
 				i.i = _.i;
+				i.texture = _.texture || false;
 				i.w = g.get.w (_);
 				i.x = g.get.x (_);
 				i.y = g.get.y (_);
@@ -134,7 +135,15 @@ const g =
 					if (i.i)
 					{
 						let hwxy = g.get.hwxy (i);
-						g.g.c.drawImage (i.i, hwxy.x, hwxy.y, hwxy.w, hwxy.h);
+						if (i.texture)
+						{
+							let texture = g.g.c.createPattern (i.i, 'repeat');
+							g.g.c.fillStyle = texture;
+							g.g.c.fillRect (hwxy.x, hwxy.y, hwxy.w, hwxy.h);
+						} else
+						{
+							g.g.c.drawImage (i.i, hwxy.x, hwxy.y, hwxy.w, hwxy.h);
+						}
 					}
 				}
 
@@ -156,6 +165,7 @@ const g =
 				room.create = false;
 				room.debug = _.debug || false;
 				room.invert = _.invert || false;
+				room.textured = false;
 				room.type = 'room';
 				room.z = 0;
 
@@ -176,6 +186,7 @@ const g =
 					{
 						room.box[room.box.length - 1].h = Math.abs (room.box[room.box.length - 1].y - e.y / g.g.height);
 						room.box[room.box.length - 1].w = Math.abs (room.box[room.box.length - 1].x - e.x / g.g.width);
+						g.g.clear ();
 						g.g.d ();
 					}
 				}
@@ -207,10 +218,12 @@ const g =
 
 				room.keydown = function (e)
 				{
+
 					switch (e.keyCode)
 					{
 						case 66: if (room.invert) room.begin_create (); break;
 						case 82: if (!room.invert) room.begin_create (); break;
+						case 84: room.textured = !room.textured; break;
 					}
 				}
 
@@ -624,7 +637,7 @@ g.s.l = function ()
 
 	g.c = g._.b ({ act: function () { g.log = 'act'; }, cursor: true, h: 0.1, i: g.i.button0, i1: g.i.button1, i2: g.i.button2, wk: 2, x: 0.5, xk: 0.5, y: 0.3, yk: 0.5, z: 2 });
 
-	g.c = g._.room ({ box: [{h: 0.28, i: g.i.road, w: 0.33, x: 0.33, y: 0.28}, {h: 0.2, i: g.i.road, w: 0.22, x: 0.38, y: 0.53}], debug: true });
+	g.c = g._.room ({ box: [{h: 0.28, i: g.i.road, texture: true, w: 0.33, x: 0.33, y: 0.28}, {h: 0.2, i: g.i.road, w: 0.22, x: 0.38, y: 0.53}], debug: true });
 
 	g.c = g._.block ({ box: [{h: 0.07, i: g.i.wall, w: 0.05, x: 0.55, y: 0.43, z: 1 }], debug: true });
 
