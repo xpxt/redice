@@ -299,23 +299,26 @@ const g =
 				u.speed = _.speed || 0.005;
 				u.vx = _.x || u.x;
 				u.vy = _.y || u.y;
-				u.z0 = _.z || 1;
+				u.z0 = _.z || 0;
 
 				u.autoz = function ()
 				{
-					for (let id in g.o)
+					if (1)
 					{
-						let o = g.o[id];
-						if (o.zen)
+						for (let id in g.o)
 						{
-							if (g.get.in (o, u))
+							let o = g.o[id];
+							if (o.zen)
 							{
-								if (u.y + u.h > o.y + o.h)
+								if (g.get.in (o, u))
 								{
-									u.z = o.z;
-								} else
-								{
-									u.z = u.z0;
+									if (u.y + u.h > o.y + o.h)
+									{
+										u.z = o.z;
+									} else
+									{
+										u.z = u.z0;
+									}
 								}
 							}
 						}
@@ -735,7 +738,7 @@ const g =
 	}
 }
 
-g.get.i = [ '_', 'button0', 'button1', 'button2', 'grass', 'hero', 'hero_red', 'hero_green', 'road', 'roadh', 'roadv', 'tree', 'wall' ];
+g.get.i = [ '_', 'black', 'button0', 'button1', 'button2', 'grass', 'hero', 'hero_red', 'hero_green', 'road', 'roadh', 'roadv', 'tree', 'wall' ];
 
 window.onload = g.l;
 
@@ -758,7 +761,11 @@ g.s.test = function ()
 
 	g.c = g._.block ({ box: [{h:0.15,w:0.02,x:0.4,y:0.74,i:g.i.wall,texture:true},{h:0.15,w:0.31,x:0.69,y:0.24,i:g.i.road,texture:true},{h:0.64,w:0.08,x:0.92,y:0.38,i:g.i.road,texture:true},{h:0.74,w:0.27,x:0,y:0,i:g.i.road,texture:true},{h:0.16,w:0.69,x:0,y:0.86,i:g.i.wall,texture:true},{h:0.26,w:0.73,x:0.27,y:0,i:g.i.road,texture:true},{h:0.02,w:0.02,x:0.62,y:0.67,i:g.i._,texture:false},{h:0.02,w:0.02,x:0.39,y:0.55,i:g.i._,texture:false}], debug: true });
 
-	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
+	g.c = g._.u ({ control: 'mouse', h: 0.12, i: g.i.black, wk: 0.42, x: 0.35, xk: 0.5, y: 0.77, yk: 1, z: 2,zen:true});
+
+	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: 0.1, xk: 0.5, y: 0.8, yk: 1, z: 1});
+
+
 
 	g.g.d ();
 }
