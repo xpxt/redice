@@ -299,6 +299,29 @@ const g =
 				u.speed = _.speed || 0.005;
 				u.vx = _.x || u.x;
 				u.vy = _.y || u.y;
+				u.z0 = _.z || 1;
+
+				u.autoz = function ()
+				{
+					for (let id in g.o)
+					{
+						let o = g.o[id];
+						if (o.zen)
+						{
+							if (g.get.in (o, u))
+							{
+								if (u.y + u.h > o.y + o.h)
+								{
+									g.log = 1;
+									u.z = o.z;
+								} else
+								{
+									u.z = u.z0;
+								}
+							}
+						}
+					}
+				}
 
 				u.goto = function (x, y)
 				{
@@ -395,6 +418,7 @@ const g =
 
 				u.tick = function ()
 				{
+					u.autoz ();
 					u.keymove ();
 					u.move ();
 				}
@@ -694,7 +718,7 @@ const g =
 	}
 }
 
-g.get.i = [ '0', 'button0', 'button1', 'button2', 'grass', 'hero', 'hero_red', 'hero_green', 'road', 'roadh', 'roadv', 'wall' ];
+g.get.i = [ '_', 'button0', 'button1', 'button2', 'grass', 'hero', 'hero_red', 'hero_green', 'road', 'roadh', 'roadv', 'tree', 'wall' ];
 
 window.onload = g.l;
 
@@ -713,9 +737,9 @@ g.s.test = function ()
 {
 	g.wipe ();
 
-	g.c = g._.room ({ box: [{h:0.62,w:0.42,x:0.27,y:0.24,i:g.i.grass,texture:true},{h:0.37,w:0.23,x:0.69,y:0.38,i:g.i.grass,texture:true},{h:0.13,w:0.22,x:0.18,y:0.73,i:g.i.roadh,texture:false},{h:0.13,w:0.18,x:0,y:0.73,i:g.i.roadh,texture:false},{h:0.25,w:0.23,x:0.69,y:0.75,i:g.i.grass,texture:true}], debug: true });
+	g.c = g._.room ({ box: [{h:0.62,w:0.42,x:0.27,y:0.24,i:g.i.grass,texture:true},{h:0.38,w:0.23,x:0.69,y:0.38,i:g.i.grass,texture:true},{h:0.14,w:0.22,x:0.18,y:0.73,i:g.i.roadh,texture:false},{h:0.14,w:0.18,x:0,y:0.73,i:g.i.roadh,texture:false},{h:0.26,w:0.23,x:0.69,y:0.75,i:g.i.grass,texture:true},{h:0.19,w:0.08,x:0.59,y:0.5,i:g.i.tree,texture:false,z:2,zen:true}], debug: true });
 
-	g.c = g._.block ({ box: [{h:0.12,w:0.02,x:0.4,y:0.74,i:g.i.wall,texture:true},{h:0.14,w:0.31,x:0.69,y:0.24,i:g.i.road,texture:true},{h:0.62,w:0.08,x:0.92,y:0.38,i:g.i.road,texture:true},{h:0.73,w:0.27,x:0,y:0,i:g.i.road,texture:true},{h:0.14,w:0.69,x:0,y:0.86,i:g.i.wall,texture:true},{h:0.24,w:0.73,x:0.27,y:0,i:g.i.road,texture:true}], debug: true });
+	g.c = g._.block ({ box: [{h:0.15,w:0.02,x:0.4,y:0.74,i:g.i.wall,texture:true},{h:0.15,w:0.31,x:0.69,y:0.24,i:g.i.road,texture:true},{h:0.64,w:0.08,x:0.92,y:0.38,i:g.i.road,texture:true},{h:0.74,w:0.27,x:0,y:0,i:g.i.road,texture:true},{h:0.16,w:0.69,x:0,y:0.86,i:g.i.wall,texture:true},{h:0.26,w:0.73,x:0.27,y:0,i:g.i.road,texture:true},{h:0.02,w:0.02,x:0.62,y:0.67,i:g.i._,texture:false}], debug: true });
 
 	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
 
