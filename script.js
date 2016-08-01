@@ -98,6 +98,14 @@ const g =
 			return b;
 		},
 
+		block: function (_)
+		{
+			let block = g._.room (_);
+				block.invert = _.invert || true;
+				block.type = 'block';
+			return block;
+		},
+
 		box: function (_)
 		{
 			let box = g._.i;
@@ -169,6 +177,7 @@ const g =
 				room.box = _.box || [];
 				room.create = false;
 				room.debug = _.debug || false;
+				room.invert = _.invert || false;
 				room.type = 'room';
 				room.z = 0;
 
@@ -200,7 +209,7 @@ const g =
 						for (let box of room.box)
 						{
 							let hwxy = g.get.hwxy (box);
-							g.g.c.fillStyle = '#0f0';
+							g.g.c.fillStyle = (room.invert) ? '#f00' : '#0f0';
 							g.g.c.fillRect (hwxy.x, hwxy.y, hwxy.w, hwxy.h);
 						}
 					}
@@ -220,9 +229,11 @@ const g =
 
 				room.keydown = function (e)
 				{
+					g.log = e.keyCode;
 					switch (e.keyCode)
 					{
-						case 82: room.begin_create (); break;
+						case 66: if (room.invert) room.begin_create (); break;
+						case 82: if (!room.invert) room.begin_create (); break;
 					}
 				}
 
@@ -245,14 +256,32 @@ const g =
 		u: function (_)
 		{
 			let u = g._.i (_);
+				u.control = _.control || 'auto';
 				u.speed = _.speed || 0.01;
 				u.vx = _.x || u.x;
 				u.vy = _.y || u.y;
 
+				u.goto = function (x, y)
+				{
+					let v = {};
+						v.x = x - u.xk * u.w;
+						v.y = y - u.yk * u.h;
+					return v;
+				}
+
+				u.mouse = function (e)
+				{
+					if (u.control == 'mouse')
+					{
+						let v = u.goto (e.x / g.g.width, e.y / g.g.height);
+						u.vx = v.x;
+						u.vy = v.y;
+					}
+				}
+
 				u.mousedown = function (e)
 				{
-					u.vx = e.x / g.g.width - u.xk * u.w;
-					u.vy = e.y / g.g.height - u.yk * u.h;
+					u.mouse (e);
 				}
 
 				u.move = function ()
@@ -267,7 +296,7 @@ const g =
 							s01 = s0 / s1;
 							let x = (u.x + s01 * u.vx) / (1 + s01);
 							let y = (u.y + s01 * u.vy) / (1 + s01);
-							if (g.get.pinroom (x + u.xk * u.w, y + u.yk * u.h))
+							if (!g.get.pinblock (x + u.xk * u.w, y + u.yk * u.h) && g.get.pinroom (x + u.xk * u.w, y + u.yk * u.h))
 							{
 								u.c ();
 								u.x = x;
@@ -382,6 +411,22 @@ const g =
 								(Math.abs (a.y - b.y + 0.5 * (a.h - b.h)) <= 0.5 * Math.abs (a.h + b.h)));
 		},
 
+		inblock: function (u)
+		{
+			for (let id in g.o)
+			{
+				let o = g.o[id];
+				if (o.type == 'block')
+				{
+					for (let box of o.box)
+					{
+						if (g.get.in (u, box)) return true;
+					}
+				}
+			}
+			return false;
+		},
+
 		inroom: function (u)
 		{
 			for (let id in g.o)
@@ -402,6 +447,22 @@ const g =
 		{
 			let hwxy = g.get.hwxy (o);
 			return ((p.x >= hwxy.x) && (p.x <= hwxy.x + hwxy.w) && (p.y >= hwxy.y) && (p.y <= hwxy.y + hwxy.h));
+		},
+
+		pinblock: function (x, y)
+		{
+			for (let id in g.o)
+			{
+				let o = g.o[id];
+				if (o.type == 'block')
+				{
+					for (let box of o.box)
+					{
+						if (g.get.pin (box, { x: x * g.g.width, y: y * g.g.height })) return true;
+					}
+				}
+			}
+			return false;
 		},
 
 		pinroom: function (x, y)
@@ -522,7 +583,9 @@ g.s.l = function ()
 
 	//g.c = g._.b ({ act: function () { g.log = 'act'; }, cursor: true, h: 0.5, i: g.i.hero, i1: g.i.hero_red, i2: g.i.hero_green, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 0.5, z: 1 });
 
-	g.c = g._.room ({ box: [{h: 0.31, w: 0.27, x: 0.34, y: 0.21}, {h: 0.4, w: 0.14, x: 0.41, y: 0.43}, {h: 0.24, w: 0.4, x: 0.38, y: 0.68}, {h: 0.74, w: 0.24, x: 0.65, y: 0.07} ], debug: true });
+	g.c = g._.room ({ box: [{h: 0.28, w: 0.33, x: 0.33, y: 0.28}, {h: 0.2, w: 0.22, x: 0.38, y: 0.53}], debug: true });
 
-	g.c = g._.u ({ h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
+	g.c = g._.block ({ box: [], debug: true });
+
+	g.c = g._.u ({ control: 'mouse', h: 0.1, i: g.i.hero, wk: 0.42, x: 0.5, xk: 0.5, y: 0.5, yk: 1, z: 1});
 }
