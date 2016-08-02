@@ -787,9 +787,15 @@ const g =
 	}
 }
 
-g.get.i = [ '_', 'black', 'blackstep0', 'blackstep1', 'button0', 'button1', 'button2', 'exit', 'exit1', 'grass', 'hero', 'hero_red', 'hero_green', 'linda', 'linda2', 'road', 'roadh', 'roadv', 'stantion201', 'start', 'tree', 'wall' ];
+g.get.i = [ '_', 'black', 'blackstep0', 'blackstep1', 'button0', 'button1', 'button2', 'city', 'exit', 'exit1', 'grass', 'hero', 'hero_red', 'hero_green', 'linda', 'linda2', 'pillar', 'road', 'roadh', 'roadv', 'shadow', 'stantion201', 'start', 'tree', 'wall' ];
 
 window.onload = g.l;
+
+g.s.city = function ()
+{
+	g.wipe ();
+	window.document.body.style.background = 'url("data/city.png")';
+}
 
 g.s.l = function ()
 {
@@ -801,9 +807,56 @@ g.s.menu = function ()
 	g.wipe ();
 	window.document.body.style.background = 'url("data/metro.png")';
 
-	g.c = g._.b ({ act: function () { g.s.metro (); }, cursor: true, h: 0.11, i: g.i.stantion201, i1: g.i.start, i2: g.i.button2, w: 0.11, x: 0.42, y: 0.29, z: 2 });
+	g.c = g._.room
+	(
+		{
+			box:
+			[
+				//room
+				{h:0.18,w:0.98,x:0.01,y:0.56,i:g.i._,texture:false,zen:false},
+
+				//pillars
+				{h:0.62,w:0.04,x:0.27,y:0.05,i:g.i.pillar,texture:false,z:2,zen:true},
+				{h:0.62,w:0.04,x:0.66,y:0.05,i:g.i.pillar,texture:false,z:2,zen:true}
+			],
+			debug: false
+		}
+	);
+
+	g.c = g._.block
+	(
+		{
+			box:
+			[
+				{h:0.03,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
+				{h:0.03,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false}
+			]
+		}
+	);
+
+	g.c = g._.b
+	({
+		act: function () { g.s.metro (); },
+		cursor: true,
+		h: 0.11,
+		i: g.i.stantion201, i1: g.i.start, i2: g.i.button2,
+		in: function ()
+		{
+			g.c = g._.i ({h:0.45,w:0.23,x:0.36,y:0.29,i:g.i.shadow,id:'shadow',texture:false,z:2});
+		},
+		out: function ()
+		{
+			delete g.o.shadow;
+		},
+		w: 0.11,
+		x: 0.42,
+		y: 0.29,
+		z: 2
+	});
 
 	g.c = g._.b ({ act: function () { window.close (); }, cursor: true, h: 0.048, i: g.i.exit, i1: g.i.exit1, wk: 2.625, x: 0.84, y: 0.124, z: 2 });
+
+	g.c = g._.u ({ control: 'auto', h: 0.15, i: g.i.black, speed: 0.005, step: g.a.black.step, tsearch: 500, wk: 0.42, x: 0.35, xk: 0.5, y: 0.6, yk: 1, z: 1 });
 }
 
 g.s.metro = function ()
@@ -816,15 +869,31 @@ g.s.metro = function ()
 		{
 			box:
 			[
+				//door city
+				{h:0.17,inact:function(){g.s.city();},w:0.17,x:0.79,y:0.2,i:g.i._,texture:false,zen:false},
+
+				//pillars
+				{h:0.62,w:0.04,x:0.27,y:0.05,i:g.i.pillar,texture:false,z:2,zen:true},
+				{h:0.62,w:0.04,x:0.66,y:0.05,i:g.i.pillar,texture:false,z:2,zen:true},
+
 				//room
 				{h:0.18,w:0.98,x:0.01,y:0.56,i:g.i._,texture:false,zen:false},
 				{h:0.2,w:0.17,x:0.79,y:0.37,i:g.i._,texture:false,zen:false},
 
 				//stantion 201
-				{h:0.11,w:0.11,x:0.42,y:0.29,i:g.i.stantion201,texture:false,zen:false},
+				{h:0.11,w:0.11,x:0.42,y:0.29,i:g.i.stantion201,texture:false,zen:false}
+			],
+			debug: false
+		}
+	);
 
-				//door city
-				{h:0.17,inact:function(){g.s.menu();},w:0.17,x:0.79,y:0.2,i:g.i._,texture:false,zen:false}
+	g.c = g._.block
+	(
+		{
+			box:
+			[
+				{h:0.03,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
+				{h:0.03,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false}
 			],
 			debug: true
 		}
