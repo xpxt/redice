@@ -6,20 +6,40 @@ const g =
 		{
 			let a = g._.i (_);
 				a.i = _.i || g.i[_.a.i[0]];
+				a.loop = _.loop || false;
 				a.period = _.period || _.a.period;
 				a.s = _.s || 0;
 				a.time = _.time || 0;
 
 				a.animate = function ()
 				{
-					a.time += g.tick;
-					if (a.time > a.period)
+					if (a.onlyone ())
 					{
-						a.time = 0;
-						a.i = g.i[a.a.i[a.s]];
-						a.s = (a.s + 2 > a.a.i.length) ? 0 : a.s + 1;
-						a.d ();
+						a.time += g.tick;
+						if (a.time > a.period)
+						{
+							a.time = 0;
+							a.i = g.i[a.a.i[a.s]];
+							a.s = (a.s + 1 > a.a.i.length) ? 0 : a.s + 1;
+							if (!a.loop && a.s == 0) { delete g.o[a.id]; } else
+							{
+								delete g.o[a.id];
+								g.c = g._.a (_);
+							}
+						}
+
 					}
+				}
+
+				a.onlyone = function ()
+				{
+					let s = 0;
+					for (let id in g.o)
+					{
+						if (id == a.id) { s++ }
+						if (s > 1) { return false; }
+					}
+					return true;
 				}
 
 				a.tick = function ()
@@ -117,6 +137,7 @@ const g =
 		{
 			let i = g._.o (_);
 				i.h = g.get.h (_);
+				i.hide = _.hide || false;
 				i.i = _.i;
 				i.texture = _.texture || false;
 				i.w = g.get.w (_);
@@ -132,7 +153,7 @@ const g =
 
 				i.d = function ()
 				{
-					if (i.i)
+					if (i.i && !i.hide)
 					{
 						let hwxy = g.get.hwxy (i);
 						if (i.texture)
@@ -169,6 +190,7 @@ const g =
 				room.textured = false;
 				room.type = 'room';
 				room.z = 0;
+				room.zen = false;
 
 				room.begin_create = function ()
 				{
@@ -230,23 +252,23 @@ const g =
 						room.d ();
 
 						//debug
-
 						let b = room.box[room.box.length - 1];
 						let box = {h: b.h, w: b.w, x: b.x, y: b.y };
 							box.i = g.get.inumname (room.texture);
 							box.texture = room.textured;
+							box.zen = room.zen;
 						g.log = g.get.json (box);
 					}
 				}
 
 				room.keydown = function (e)
 				{
-
 					switch (e.keyCode)
 					{
 						case 66: if (room.invert) room.begin_create (); break;
 						case 82: if (!room.invert) room.begin_create (); break;
 						case 84: room.textured = !room.textured; break;
+						case 90: room.zen = !room.zen; break;
 					}
 				}
 
@@ -284,6 +306,7 @@ const g =
 				room.wheel = function (e)
 				{
 					room.change (e);
+					room.creating (e);
 				}
 
 			room.d ();
@@ -296,7 +319,11 @@ const g =
 			let u = g._.i (_);
 				u.control = _.control || 'auto';
 				u.key = { d: 0, l: 0, r: 0, u: 0 }
+				u.moved = false;
+				u.get = {move: function () {return u.move;}}
 				u.speed = _.speed || 0.005;
+				u.tsearch0 = g.time;
+				u.tsearch = _.tsearch || 1000 * g.get.r ();
 				u.vx = _.x || u.x;
 				u.vy = _.y || u.y;
 				u.z0 = _.z || 0;
@@ -325,11 +352,25 @@ const g =
 					}
 				}
 
+				u.automove = function ()
+				{
+					if (u.control == 'auto')
+					{
+						if (g.time - u.tsearch0 > u.tsearch)
+						{
+							u.tsearch0 = g.time;
+							u.vx = g.get.r ();
+							u.vy = g.get.r ();
+						}
+					}
+				}
+
 				u.goto = function (x, y)
 				{
 					let v = {};
 						v.x = x - u.xk * u.w;
 						v.y = y - u.yk * u.h;
+						u.moved = true;
 					return v;
 				}
 
@@ -412,14 +453,17 @@ const g =
 								u.c ();
 								u.x = x;
 								u.y = y;
-								u.d ();
 							}
+						}	else
+						{
+							u.moved = false;
 						}
 					}
 				}
 
 				u.tick = function ()
 				{
+					u.automove ();
 					u.autoz ();
 					u.keymove ();
 					u.move ();
@@ -449,10 +493,15 @@ const g =
 
 	a:
 	{
+		black:
+		{
+			step: { i: ['blackstep0', 'blackstep1'], period: 100 }
+		},
 		hero:
 		{
-			color: {i: ['hero', 'hero_red'], period: 100 }
-		}
+			color: { i: ['hero', 'hero_red'], period: 100 }
+		},
+		linda: { i: ['linda', 'linda2'], period: 500 }
 	},
 
 	set c (_) { g.o[_.id] = _; },
@@ -493,7 +542,7 @@ const g =
 
 			c.d = function ()
 			{
-				//c.clear ();
+				c.clear ();
 				for (let z = 0; z <= c.z; z++)
 				{
 					for (let id in g.o)
@@ -738,7 +787,7 @@ const g =
 	}
 }
 
-g.get.i = [ '_', 'black', 'button0', 'button1', 'button2', 'grass', 'hero', 'hero_red', 'hero_green', 'road', 'roadh', 'roadv', 'tree', 'wall' ];
+g.get.i = [ '_', 'black', 'blackstep0', 'blackstep1', 'button0', 'button1', 'button2', 'exit', 'exit1', 'grass', 'hero', 'hero_red', 'hero_green', 'linda', 'linda2', 'road', 'roadh', 'roadv', 'stantion201', 'start', 'tree', 'wall' ];
 
 window.onload = g.l;
 
@@ -750,22 +799,94 @@ g.s.l = function ()
 g.s.menu = function ()
 {
 	g.wipe ();
-	g.c = g._.b ({ act: function () { g.s.test (); }, cursor: true, h: 0.1, i: g.i.button0, i1: g.i.button1, i2: g.i.button2, wk: 2, x: 0.5, xk: 0.5, y: 0.5, yk: 0.5, z: 2 });
+	window.document.body.style.background = 'url("data/metro.png")';
+
+	g.c = g._.b ({ act: function () { g.s.metro (); }, cursor: true, h: 0.11, i: g.i.stantion201, i1: g.i.start, i2: g.i.button2, w: 0.11, x: 0.42, y: 0.29, z: 2 });
+
+	g.c = g._.b ({ act: function () { window.close (); }, cursor: true, h: 0.048, i: g.i.exit, i1: g.i.exit1, wk: 2.625, x: 0.84, y: 0.124, z: 2 });
+}
+
+g.s.metro = function ()
+{
+	g.wipe ();
+	window.document.body.style.background = 'url("data/metro.png")';
+
+	g.c = g._.room
+	(
+		{
+			box:
+			[
+				//room
+				{h:0.18,w:0.98,x:0.01,y:0.56,i:g.i._,texture:false,zen:false},
+				{h:0.2,w:0.17,x:0.79,y:0.37,i:g.i._,texture:false,zen:false},
+
+				//stantion 201
+				{h:0.11,w:0.11,x:0.42,y:0.29,i:g.i.stantion201,texture:false,zen:false},
+
+				//door city
+				{h:0.17,inact:function(){g.s.menu();},w:0.17,x:0.79,y:0.2,i:g.i._,texture:false,zen:false}
+			],
+			debug: true
+		}
+	);
+
+	g.c = g._.b ({ act: function () { window.close (); }, cursor: true, h: 0.048, i: g.i.exit, i1: g.i.exit1, wk: 2.625, x: 0.84, y: 0.124, z: 2 });
+
+	g.c = g._.u ({ control: 'keyboard', h: 0.15, i: g.i.hero, wk: 0.42, x: 0.47, xk: 0.5, y: 0.65, yk: 1, z: 1 });
 }
 
 g.s.test = function ()
 {
 	g.wipe ();
 
-	g.c = g._.room ({ box: [{h:0.62,w:0.42,x:0.27,y:0.24,i:g.i.grass,texture:true},{h:0.38,w:0.23,x:0.69,y:0.38,i:g.i.grass,texture:true},{h:0.14,w:0.22,x:0.18,y:0.73,i:g.i.roadh,texture:false},{h:0.14,w:0.18,x:0,y:0.73,i:g.i.roadh,texture:false},{h:0.26,w:0.23,x:0.69,y:0.75,i:g.i.grass,texture:true},{h:0.19,w:0.08,x:0.59,y:0.5,i:g.i.tree,texture:false,z:2,zen:true},{h:0.2,w:0.08,x:0.36,y:0.37,i:g.i.tree,texture:false,z:2,zen:true},{h:0.03,inact:function(){g.s.menu();},w:0.23,x:0.69,y:0.96,i:g.i._,texture:false}], debug: true });
+	g.c = g._.room
+	(
+		{
+			box:
+			[
+				{h:0.62,w:0.42,x:0.27,y:0.24,i:g.i.grass,texture:true},
+				{h:0.38,w:0.23,x:0.69,y:0.38,i:g.i.grass,texture:true},
+				{h:0.26,w:0.23,x:0.69,y:0.75,i:g.i.grass,texture:true},
 
-	g.c = g._.block ({ box: [{h:0.15,w:0.02,x:0.4,y:0.74,i:g.i.wall,texture:true},{h:0.15,w:0.31,x:0.69,y:0.24,i:g.i.road,texture:true},{h:0.64,w:0.08,x:0.92,y:0.38,i:g.i.road,texture:true},{h:0.74,w:0.27,x:0,y:0,i:g.i.road,texture:true},{h:0.16,w:0.69,x:0,y:0.86,i:g.i.wall,texture:true},{h:0.26,w:0.73,x:0.27,y:0,i:g.i.road,texture:true},{h:0.02,w:0.02,x:0.62,y:0.67,i:g.i._,texture:false},{h:0.02,w:0.02,x:0.39,y:0.55,i:g.i._,texture:false}], debug: true });
+				{h:0.14,w:0.22,x:0.18,y:0.73,i:g.i.roadh,texture:false},
+				{h:0.14,w:0.18,x:0,y:0.73,i:g.i.roadh,texture:false},
 
-	g.c = g._.u ({ control: 'mouse', h: 0.12, i: g.i.black, wk: 0.42, x: 0.35, xk: 0.5, y: 0.77, yk: 1, z: 2,zen:true});
+				{h:0.3,wk:0.83,x:0.59,y:0.5,i:g.i.tree,texture:false,z:2,zen:true},
+				{h:0.3,wk:0.83,x:0.36,y:0.37,i:g.i.tree,texture:false,z:2,zen:true},
 
-	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: 0.1, xk: 0.5, y: 0.8, yk: 1, z: 1});
+				{h:0.03,inact:function(){g.s.menu();},w:0.23,x:0.69,y:0.96,i:g.i._,texture:false}
+			],
+			debug: true
+		}
+	);
 
+	g.c = g._.block
+	(
+		{
+			box:
+			[
+				{h:0.15,w:0.31,x:0.69,y:0.24,i:g.i.road,texture:true},
+				{h:0.64,w:0.08,x:0.92,y:0.38,i:g.i.road,texture:true},
+				{h:0.74,w:0.27,x:0,y:0,i:g.i.road,texture:true},
+				{h:0.26,w:0.73,x:0.27,y:0,i:g.i.road,texture:true},
 
+				{h:0.16,w:0.69,x:0,y:0.86,i:g.i.wall,texture:true},
+				{h:0.15,w:0.02,x:0.4,y:0.74,i:g.i.wall,texture:true},
+
+				{h:0.03,w:0.02,x:0.41,y:0.65,i:g.i._,texture:false,zen:false},
+				{h:0.03,w:0.02,x:0.64,y:0.78,i:g.i._,texture:false,zen:false}
+			],
+			debug: true
+		}
+	);
+
+	g.c = g._.u ({ control: 'auto', h: 0.15, i: g.i.black, speed: 0.002, step: g.a.black.step, tsearch: 3000, wk: 0.42, x: 0.35, xk: 0.5, y: 0.77, yk: 1, z: 1, zen: true });
+
+	g.c = g._.u ({ control: 'auto', h: 0.15, i: g.i.black, speed: 0.001, step: g.a.black.step, tsearch: 5000, wk: 0.42, x: 0.35, xk: 0.5, y: 0.77, yk: 1, z: 1, zen: true });
+
+	g.c = g._.u ({ control: 'keyboard', h: 0.15, i: g.i.hero, wk: 0.42, x: 0.1, xk: 0.5, y: 0.8, yk: 1, z: 1 });
+
+	g.c = g._.a ({ a: g.a.linda, h: 0.15, loop: true, wk: 0.67, x: 0.35, y: 0.6, z: 2, zen: true });
 
 	g.g.d ();
 }
