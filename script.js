@@ -787,22 +787,183 @@ const g =
 	}
 }
 
-g.get.i = [ '_', 'black', 'blackstep0', 'blackstep1', 'button0', 'button1', 'button2', 'city', 'exit', 'exit1', 'grass', 'hero', 'hero_red', 'hero_green', 'linda', 'linda2', 'pillar', 'road', 'roadh', 'roadv', 'shadow', 'stantion201', 'start', 'tree', 'wall' ];
+g.get.i = [ '_', 'bar', 'black', 'blackstep0', 'blackstep1', 'button0', 'button1', 'button2', 'city', 'dump', 'exit', 'exit1', 'foobar', 'grass', 'hero', 'hero_red', 'hero_green', 'linda', 'linda2', 'metrodoor', 'pillar', 'road', 'roadh', 'roadv', 'shadow', 'stantion201', 'start', 'tree', 'wall' ];
 
 window.onload = g.l;
 
-g.s.city = function ()
+g.s.bar = function (p)
+{
+	g.wipe ();
+	window.document.body.style.background = 'url("data/bar.png")';
+
+	g.c = g._.room
+	({
+		box:
+		[
+			//foobar
+			{h:0.15,w:0.23,x:0.76,y:0.2,i:g.i.foobar,texture:false,z:2,zen:true},
+			{h:0.12,w:0.22,x:0.77,y:0.19,i:g.i._,texture:false,zen:false},
+
+			//door
+			{h:0.19,inact: function () {g.s.city ({x: 0.6, y: 0.2 });},w:0.06,x:0.46,y:0.01,i:g.i._,texture:false,zen:false},
+
+			//room
+			{h:0.79,w:0.98,x:0.01,y:0.2,i:g.i._,texture:false,zen:false}
+		],
+		debug: false
+	});
+
+	g.c = g._.block
+	({
+		box:
+		[
+			//barblock
+			{h:0.03,w:0.23,x:0.76,y:0.32,i:g.i._,texture:false,zen:false},
+			{h:0.22,w:0.04,x:0.74,y:0.13,i:g.i._,texture:false,zen:false},
+
+			//scene
+			{h:0.26,w:0.02,x:0.32,y:0.47,i:g.i._,texture:false,zen:false},
+			{h:0.07,w:0.09,x:0.24,y:0.46,i:g.i._,texture:false,zen:false},
+			{h:0.13,w:0.06,x:0.2,y:0.33,i:g.i._,texture:false,zen:false},
+			{h:0.05,w:0.2,x:0.00,y:0.32,i:g.i._,texture:false,zen:false},
+			{h:0.09,w:0.23,x:0.01,y:0.79,i:g.i._,texture:false,zen:false},
+			{h:0.23,w:0.02,x:0.23,y:0.65,i:g.i._,texture:false,zen:false},
+			{h:0.08,w:0.11,x:0.23,y:0.65,i:g.i._,texture:false,zen:false}
+		],
+		debug: false
+	});
+
+	g.c = g._.u ({ control: 'auto', h: 0.22, i: g.i.black, speed: 0.005, step: g.a.black.step, tsearch: 500, wk: 0.42, x: 0.8, xk: 0.5, y: 0.25, yk: 1, z: 1 });
+
+	g.c = g._.u ({ control: 'auto', h: 0.22, i: g.i.linda, speed: 0.005, step: g.a.black.step, tsearch: 500, wk: 0.67, x: 0.2, xk: 0.5, y: 0.5, yk: 1, z: 1 });
+
+	g.c = g._.u ({ control: 'keyboard', h: 0.2, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
+}
+
+g.s.down = function (p)
+{
+	g.wipe ();
+	window.document.body.style.background = 'url("data/down.png")';
+
+	g.c = g._.room
+	({
+		box:
+		[
+			//city
+			{h:0.03,inact:function(){g.s.city({x:0.75,y:0.1});},w:0.37,x:0.34,y:0.96,i:g.i._,texture:false,zen:false},
+
+			//dump
+			{h:0.03,inact:function(){g.s.dump({x:0.2,y:0.9});},w:0.37,x:0.34,y:0.01,i:g.i._,texture:false,zen:false},
+
+			//room
+			{h:0.98,w:0.37,x:0.34,y:0.01,i:g.i._,texture:false,zen:false},
+			{h:0.2,w:0.33,x:0.01,y:0.7,i:g.i._,texture:false,zen:false},
+			{h:0.22,w:0.08,x:0.26,y:0.48,i:g.i._,texture:false,zen:false}
+		],
+		debug: false
+	});
+
+	g.c = g._.block
+	({
+		box:
+		[
+		],
+		debug: true
+	});
+
+	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
+}
+
+g.s.dump = function (p)
+{
+	g.wipe ();
+	window.document.body.style.background = 'url("data/dump.png")';
+
+	g.c = g._.room
+	({
+		box:
+		[
+			//city
+			{h:0.29,inact:function(){g.s.city({x:0.05,y:0.2});},w:0.01,x:0.98,y:0.69,i:g.i._,texture:false,zen:false},
+
+			//room
+			{h:0.79,w:0.98,x:0.01,y:0.19,i:g.i._,texture:false,zen:false}
+		],
+		debug: false
+	});
+
+	g.c = g._.block
+	({
+		box:
+		[
+		],
+		debug: true
+	});
+
+	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
+}
+
+g.s.city = function (p)
 {
 	g.wipe ();
 	window.document.body.style.background = 'url("data/city.png")';
+
+	g.c = g._.room
+	({
+		box:
+		[
+			//bar
+			{h:0.14,inact: function () {g.s.bar ({x:0.55,y:0.2});}, w:0.04,x:0.55,y:0.01,i:g.i._,texture:false,zen:false},
+
+			//down
+			{h:0.03,inact:function(){g.s.down({x:0.5,y:0.95});},w:0.15,x:0.7,y:0.02,i:g.i._,texture:false,zen:false},
+
+			//dump
+			{h:0.37,inact:function(){g.s.dump({x:0.9,y:0.8});},w:0.02,x:0.01,y:0.19,i:g.i._,texture:false,zen:false},
+
+			//metro
+			{h:0.14,w:0.1,x:0.54,y:0.3,i:g.i.metrodoor,texture:false,z:2,zen:true},
+			{h:0.02,inact:function(){g.s.metro ({x:0.76,y:0.57});},w:0.07,x:0.55,y:0.42,i:g.i._,texture:false,zen:false},
+
+			//streets
+			{h:0.41,w:0.98,x:0.01,y:0.15,i:g.i._,texture:false,zen:false},
+			{h:0.43,w:0.39,x:0.1,y:0.56,i:g.i._,texture:false,zen:false},
+			{h:0.14,w:0.15,x:0.7,y:0.01,i:g.i._,texture:false,zen:false}
+		],
+		debug: false
+	});
+
+	g.c = g._.block
+	({
+		box:
+		[
+			//dump
+			{h:0.04,w:0.07,x:0.01,y:0.15,i:g.i._,texture:false,zen:false},
+
+			//close
+			{h:0.21,w:0.01,x:0.93,y:0.15,i:g.i._,texture:false,zen:false},
+			{h:0.02,w:0.05,x:0.94,y:0.34,i:g.i._,texture:false,zen:false},
+
+			//metro
+			{h:0.06,w:0.02,x:0.535,y:0.38,i:g.i._,texture:false,zen:false},
+			{h:0.06,w:0.02,x:0.62,y:0.38,i:g.i._,texture:false,zen:false},
+			{h:0.03,w:0.1,x:0.54,y:0.36,i:g.i._,texture:false,zen:false},
+
+			//water
+			{h:0.19,w:0.13,x:0.22,y:0.7,i:g.i._,texture:false,zen:false}
+		],
+		debug: true
+	});
+
+	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
 
 g.s.l = function ()
 {
-	g.s.menu ();
+	g.s.city ({x:0.63,y:0.45});
 }
 
-g.s.menu = function ()
+g.s.menu = function (p)
 {
 	g.wipe ();
 	window.document.body.style.background = 'url("data/metro.png")';
@@ -836,7 +997,7 @@ g.s.menu = function ()
 
 	g.c = g._.b
 	({
-		act: function () { g.s.metro (); },
+		act: function () { g.s.metro ({x: 0.47, y: 0.65}); },
 		cursor: true,
 		h: 0.11,
 		i: g.i.stantion201, i1: g.i.start, i2: g.i.button2,
@@ -859,7 +1020,7 @@ g.s.menu = function ()
 	g.c = g._.u ({ control: 'auto', h: 0.15, i: g.i.black, speed: 0.005, step: g.a.black.step, tsearch: 500, wk: 0.42, x: 0.35, xk: 0.5, y: 0.6, yk: 1, z: 1 });
 }
 
-g.s.metro = function ()
+g.s.metro = function (p)
 {
 	g.wipe ();
 	window.document.body.style.background = 'url("data/metro.png")';
@@ -870,7 +1031,7 @@ g.s.metro = function ()
 			box:
 			[
 				//door city
-				{h:0.17,inact:function(){g.s.city();},w:0.17,x:0.79,y:0.2,i:g.i._,texture:false,zen:false},
+				{h:0.17,inact:function(){g.s.city({x:0.63,y:0.45});},w:0.17,x:0.79,y:0.2,i:g.i._,texture:false,zen:false},
 
 				//pillars
 				{h:0.62,w:0.04,x:0.27,y:0.05,i:g.i.pillar,texture:false,z:2,zen:true},
@@ -901,7 +1062,7 @@ g.s.metro = function ()
 
 	g.c = g._.b ({ act: function () { window.close (); }, cursor: true, h: 0.048, i: g.i.exit, i1: g.i.exit1, wk: 2.625, x: 0.84, y: 0.124, z: 2 });
 
-	g.c = g._.u ({ control: 'keyboard', h: 0.15, i: g.i.hero, wk: 0.42, x: 0.47, xk: 0.5, y: 0.65, yk: 1, z: 1 });
+	g.c = g._.u ({ control: 'keyboard', h: 0.15, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
 
 g.s.test = function ()
