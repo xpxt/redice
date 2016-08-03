@@ -172,6 +172,14 @@ const g =
 			return i;
 		},
 
+		npc: function (_)
+		{
+			let npc = g._.u (_);
+				npc.type = 'npc';
+
+			return npc;
+		},
+
 		o: function (_)
 		{
 			let o = _;
@@ -787,7 +795,7 @@ const g =
 	}
 }
 
-g.get.i = [ '_', 'bar', 'black', 'blackstep0', 'blackstep1', 'button0', 'button1', 'button2', 'city', 'dump', 'exit', 'exit1', 'foobar', 'grass', 'hero', 'hero_red', 'hero_green', 'linda', 'linda2', 'metrodoor', 'pillar', 'road', 'roadh', 'roadv', 'shadow', 'stantion201', 'start', 'tree', 'wall' ];
+g.get.i = [ '_', 'bar', 'black', 'blackstep0', 'blackstep1', 'button0', 'button1', 'button2', 'city', 'dump', 'exit', 'exit1', 'foobar', 'grass', 'hero', 'hero_red', 'hero_green', 'linda', 'linda2', 'metrodoor', 'musicant', 'pillar', 'road', 'roadh', 'roadv', 'shadow', 'stantion201', 'start', 'tree', 'wall' ];
 
 window.onload = g.l;
 
@@ -960,7 +968,7 @@ g.s.city = function (p)
 
 g.s.l = function ()
 {
-	g.s.city ({x:0.63,y:0.45});
+	g.s.menu ();
 }
 
 g.s.menu = function (p)
@@ -989,8 +997,12 @@ g.s.menu = function (p)
 		{
 			box:
 			[
-				{h:0.03,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
-				{h:0.03,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false}
+				//bench
+				{h:0.02,w:0.15,x:0.4,y:0.56,i:g.i._,texture:false,zen:false},
+
+				//pillars
+				{h:0.04,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
+				{h:0.04,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false}
 			]
 		}
 	);
@@ -1053,14 +1065,20 @@ g.s.metro = function (p)
 		{
 			box:
 			[
-				{h:0.03,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
-				{h:0.03,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false}
+				//bench
+				{h:0.02,w:0.15,x:0.4,y:0.56,i:g.i._,texture:false,zen:false},
+
+				//pillars
+				{h:0.04,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
+				{h:0.04,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false}
 			],
 			debug: true
 		}
 	);
 
 	g.c = g._.b ({ act: function () { window.close (); }, cursor: true, h: 0.048, i: g.i.exit, i1: g.i.exit1, wk: 2.625, x: 0.84, y: 0.124, z: 2 });
+
+	g.c = g._.u ({ control: 'passive', h: 0.15, i: g.i.musicant, wk: 0.68, x: 0.29, xk: 0.5, y: 0.68, yk: 1, z: 2, zen: true });
 
 	g.c = g._.u ({ control: 'keyboard', h: 0.15, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
