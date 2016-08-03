@@ -172,14 +172,6 @@ const g =
 			return i;
 		},
 
-		npc: function (_)
-		{
-			let npc = g._.u (_);
-				npc.type = 'npc';
-
-			return npc;
-		},
-
 		o: function (_)
 		{
 			let o = _;
@@ -469,12 +461,25 @@ const g =
 					}
 				}
 
+				u.reaction = function ()
+				{
+					for (let id in g.o)
+					{
+						let o = g.o[id];
+						if (o.type == 'hero' && g.get.in (u, o))
+						{
+							g.log = 'hi';
+						}
+					}
+				},
+
 				u.tick = function ()
 				{
 					u.automove ();
 					u.autoz ();
 					u.keymove ();
 					u.move ();
+					//u.reaction ();
 					u.zone ();
 				}
 
@@ -845,7 +850,7 @@ g.s.bar = function (p)
 
 	g.c = g._.u ({ control: 'auto', h: 0.22, i: g.i.linda, speed: 0.005, step: g.a.black.step, tsearch: 500, wk: 0.67, x: 0.2, xk: 0.5, y: 0.5, yk: 1, z: 1 });
 
-	g.c = g._.u ({ control: 'keyboard', h: 0.2, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
+	g.c = g._.u ({ control: 'keyboard', h: 0.2, i: g.i.hero, id: 'hero', wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
 
 g.s.down = function (p)
@@ -879,7 +884,7 @@ g.s.down = function (p)
 		debug: true
 	});
 
-	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
+	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, id: 'hero', wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
 
 g.s.dump = function (p)
@@ -908,7 +913,7 @@ g.s.dump = function (p)
 		debug: true
 	});
 
-	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
+	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, id: 'hero', wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
 
 g.s.city = function (p)
@@ -963,12 +968,12 @@ g.s.city = function (p)
 		debug: true
 	});
 
-	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
+	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, id: 'hero', wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
 
 g.s.l = function ()
 {
-	g.s.menu ();
+	g.s.bar ({x:0.55,y:0.2});
 }
 
 g.s.menu = function (p)
@@ -1002,7 +1007,8 @@ g.s.menu = function (p)
 
 				//pillars
 				{h:0.04,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
-				{h:0.04,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false}
+				{h:0.04,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false},
+				{h:0.03,w:0.44,x:0.27,y:0.53,i:g.i._,texture:false,zen:false}
 			]
 		}
 	);
@@ -1070,7 +1076,8 @@ g.s.metro = function (p)
 
 				//pillars
 				{h:0.04,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
-				{h:0.04,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false}
+				{h:0.04,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false},
+				{h:0.03,w:0.44,x:0.27,y:0.53,i:g.i._,texture:false,zen:false}
 			],
 			debug: true
 		}
@@ -1078,9 +1085,9 @@ g.s.metro = function (p)
 
 	g.c = g._.b ({ act: function () { window.close (); }, cursor: true, h: 0.048, i: g.i.exit, i1: g.i.exit1, wk: 2.625, x: 0.84, y: 0.124, z: 2 });
 
-	g.c = g._.u ({ control: 'passive', h: 0.15, i: g.i.musicant, wk: 0.68, x: 0.29, xk: 0.5, y: 0.68, yk: 1, z: 2, zen: true });
+	g.c = g._.u ({ control: 'passive', h: 0.15, i: g.i.musicant, type: 'npc', wk: 0.68, x: 0.29, xk: 0.5, y: 0.68, yk: 1, z: 2, zen: true });
 
-	g.c = g._.u ({ control: 'keyboard', h: 0.15, i: g.i.hero, wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
+	g.c = g._.u ({ control: 'keyboard', h: 0.15, i: g.i.hero, id: 'hero', wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
 
 g.s.test = function ()
