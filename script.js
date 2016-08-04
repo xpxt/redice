@@ -318,7 +318,7 @@ const g =
 		{
 			let t = g._.o (_);
 				t.k = _.k || 1;
-				t.t = _.t || 'text';
+				t.t = _.t || '';
 				t.ta = _.ta || 'center';
 				t.tb = _.tb || 'middle';
 				t.tbc = _.tbc || 'transparent';
@@ -339,7 +339,6 @@ const g =
 				let w = t.k * g.g.c.measureText (t.t).width;
 				let x = t.x * g.g.width;
 				let y = t.y * g.g.height;
-				
 
 				g.g.c.fillStyle = t.tbc;
 				g.g.c.fillRect (x - 0.5 * w, y - 0.5 * h, w, h);
@@ -357,14 +356,21 @@ const g =
 				u.besided = false;
 				u.control = _.control || 'auto';
 				u.get = {move: function () {return u.move;}}
-				u.key = { a: 0, d: 0, l: 0, r: 0, u: 0 }
+				u.hi = _.hi || 'hi';
+				u.quest = _.quest || false;
+				u.key = { a: 0, d: 0, l: 0, press: false, r: 0, u: 0 }
 				u.moved = false;
 				u.reacted = false;
 				u.speed = _.speed || 0.005;
+				u.stoped = _.stoped || false;
+				u.story = _.story || [];
+				u.stored = false;
+				u.ss = _.ss || -1;
 				u.tsearch0 = g.time;
 				u.tsearch = _.tsearch || 1000 * g.get.r ();
 				u.vx = _.x || u.x;
 				u.vy = _.y || u.y;
+				u.win = _.win || function () {};
 				u.z0 = _.z || 0;
 
 				u.autoz = function ()
@@ -456,10 +462,12 @@ const g =
 							case 65: u.key.l = 0; break;
 							case 68: u.key.r = 0; break;
 							case 69: u.key.a = 0; break;
+							case 81: u.stoped = true; break
 							case 83: u.key.d = 0; break;
 							case 87: u.key.u = 0; break;
 						}
 					}
+					u.key.press = false;
 				}
 
 				u.mouse = function (e)
@@ -509,6 +517,19 @@ const g =
 					{
 						if (g.get.in (u, h))
 						{
+							if (u.quest)
+							{
+								u.win ();
+							}
+							if (h.key.a && !h.key.press)
+							{
+								h.key.press = true;
+								u.ss += (u.ss < u.story.length - 1) ? 1 : 0;
+								u.hi = u.story [u.ss];
+								delete g.o[u.sid];
+								g.c = g._.t ({ id: u.sid, k: 1.3, t: u.hi, tbc: '#fff', tc: '#000', x: u.x + 0.5 * u.w, y: u.y - 0.2 * u.h });
+							}
+							if (h.key.q && !h.key.press) {delete g.o[u.sid];}
 							if (!u.besided)
 							{
 								u.besided = true;
@@ -516,7 +537,7 @@ const g =
 								{
 									u.reacted = true;
 									u.sid = u.id + 'say';
-									g.c = g._.t ({ id: u.sid, t: 'hi', x: u.x + 0.5 * u.w, y: u.y - 0.5 * u.h });
+									g.c = g._.t ({ id: u.sid, k: 1.3, t: u.hi, tbc: '#fff', tc: '#000', x: u.x + 0.5 * u.w, y: u.y - 0.2 * u.h });
 								}
 							}
 						} else
@@ -1146,7 +1167,7 @@ g.s.metro = function (p)
 
 	g.c = g._.b ({ act: function () { window.close (); }, cursor: true, h: 0.048, i: g.i.exit, i1: g.i.exit1, wk: 2.625, x: 0.84, y: 0.124, z: 2 });
 
-	g.c = g._.u ({ control: 'passive', h: 0.15, i: g.i.musicant, type: 'npc', wk: 0.68, x: 0.29, xk: 0.5, y: 0.68, yk: 1, z: 2, zen: true });
+	g.c = g._.u ({ control: 'passive', h: 0.15, hi: 'Подойди, есть дело', i: g.i.musicant, story: ['Хочешь пройти в закрытую зону?', 'Знаю, все хотят', 'Могу организовать', 'Интересно? [q - no, e - es]', 'Для начала убеди меня', 'Что тебе можно доверять', 'Помоги местным и я помогу тебе', 'Меня все здесь знают как Музыкант', 'На этом все', 'Приходи, когда справишься', 'Приходи позже', 'Прекрати', 'Не доставай меня', 'Привет, я тебя знаю?', 'Полиция! Тут наркоман!', 'Хех, видел бы ты свою рожу', 'Давай уже', 'Я буду просто молчать', '', '', '', '', 'Настойчивый ублюдок', 'В этой игре есть и другие персонажи', 'Приходи позже'], type: 'npc', wk: 0.68, x: 0.29, xk: 0.5, y: 0.68, yk: 1, z: 2, zen: true });
 
 	g.c = g._.u ({ control: 'keyboard', h: 0.15, i: g.i.hero, id: 'hero', wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
