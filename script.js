@@ -314,13 +314,52 @@ const g =
 			return room;
 		},
 
+		t: function (_)
+		{
+			let t = g._.o (_);
+				t.k = _.k || 1;
+				t.t = _.t || 'text';
+				t.ta = _.ta || 'center';
+				t.tb = _.tb || 'middle';
+				t.tbc = _.tbc || 'transparent';
+				t.tc = _.tc || '#fff';
+				t.tf = _.tf || 'Verdana';
+				t.ts = _.ts || '12px';
+				t.x = _.x || 0.5;
+				t.y = _.y || 0.5;
+				t.z = g.set.z (_) || g.set.z ({z:3});
+
+			t.d = function ()
+			{
+				g.g.c.font = t.ts + ' ' + t.tf;
+				g.g.c.textAlign = t.ta;
+				g.g.c.textBaseline = t.tb;
+
+				let h = t.k * parseInt(t.ts, 10);
+				let w = t.k * g.g.c.measureText (t.t).width;
+				let x = t.x * g.g.width;
+				let y = t.y * g.g.height;
+				
+
+				g.g.c.fillStyle = t.tbc;
+				g.g.c.fillRect (x - 0.5 * w, y - 0.5 * h, w, h);
+
+				g.g.c.fillStyle = t.tc;
+				g.g.c.fillText (t.t, x, y);
+			}
+
+			return t;
+		},
+
 		u: function (_)
 		{
 			let u = g._.i (_);
+				u.besided = false;
 				u.control = _.control || 'auto';
-				u.key = { d: 0, l: 0, r: 0, u: 0 }
-				u.moved = false;
 				u.get = {move: function () {return u.move;}}
+				u.key = { a: 0, d: 0, l: 0, r: 0, u: 0 }
+				u.moved = false;
+				u.reacted = false;
 				u.speed = _.speed || 0.005;
 				u.tsearch0 = g.time;
 				u.tsearch = _.tsearch || 1000 * g.get.r ();
@@ -401,6 +440,7 @@ const g =
 						{
 							case 65: u.key.l = 1; break;
 							case 68: u.key.r = 1; break;
+							case 69: u.key.a = 1; break;
 							case 83: u.key.d = 1; break;
 							case 87: u.key.u = 1; break;
 						}
@@ -415,6 +455,7 @@ const g =
 						{
 							case 65: u.key.l = 0; break;
 							case 68: u.key.r = 0; break;
+							case 69: u.key.a = 0; break;
 							case 83: u.key.d = 0; break;
 							case 87: u.key.u = 0; break;
 						}
@@ -463,12 +504,32 @@ const g =
 
 				u.reaction = function ()
 				{
-					for (let id in g.o)
+					let h = g.o.hero;
+					if (h && u.type == 'npc')
 					{
-						let o = g.o[id];
-						if (o.type == 'hero' && g.get.in (u, o))
+						if (g.get.in (u, h))
 						{
-							g.log = 'hi';
+							if (!u.besided)
+							{
+								u.besided = true;
+								if (!u.reacted)
+								{
+									u.reacted = true;
+									u.sid = u.id + 'say';
+									g.c = g._.t ({ id: u.sid, t: 'hi', x: u.x + 0.5 * u.w, y: u.y - 0.5 * u.h });
+								}
+							}
+						} else
+						{
+							if (u.besided)
+							{
+								u.besided = false;
+								if (u.reacted)
+								{
+									u.reacted = false;
+									delete g.o[u.sid];
+								}
+							}
 						}
 					}
 				},
@@ -479,7 +540,7 @@ const g =
 					u.autoz ();
 					u.keymove ();
 					u.move ();
-					//u.reaction ();
+					u.reaction ();
 					u.zone ();
 				}
 
@@ -973,7 +1034,7 @@ g.s.city = function (p)
 
 g.s.l = function ()
 {
-	g.s.bar ({x:0.55,y:0.2});
+	g.s.menu ({x:0.55,y:0.2});
 }
 
 g.s.menu = function (p)
