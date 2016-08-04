@@ -386,7 +386,7 @@ const g =
 								{
 									if (u.y + u.h > o.y + o.h)
 									{
-										u.z = o.z;
+										u.z = o.z + 1;
 									} else
 									{
 										u.z = u.z0;
@@ -576,7 +576,10 @@ const g =
 							let y = (u.y + u.yk * u.h) * g.g.height;
 							if (g.get.pin (o, { x: x, y: y }))
 							{
-								o.inact ();
+								if (u.id == 'hero')
+								{
+									o.inact ();
+								}
 							}
 						}
 					}
@@ -628,7 +631,7 @@ const g =
 			c.style.left = 0;
 			c.style.position = 'absolute';
 			c.style.top = 0;
-			c.z = 0;
+			c.z = 4;
 
 			c.clear = function ()
 			{
@@ -793,6 +796,12 @@ const g =
 		{
 			let r = Math.random ();
 
+			if (Array.isArray (a))
+			{
+				r = Math.floor (Math.random () * a.length);
+				return a[r];
+			}
+
 			if (a == 'color')
 			{
 				r = '#' + Math.floor (Math.random () * 16777215).toString (16);
@@ -807,6 +816,7 @@ const g =
 			{
 				r = Math.floor (Math.random () * (b - a + 1)) + a;
 			}
+
 
 			return r;
 		},
@@ -850,6 +860,7 @@ const g =
 	{
 		barry: 0,
 		musicant: 0,
+		police: 0
 	},
 
 	s: {},
@@ -888,7 +899,7 @@ const g =
 	}
 }
 
-g.get.i = [ '_', 'bar', 'black', 'blackstep0', 'blackstep1', 'button0', 'button1', 'button2', 'city', 'dump', 'exit', 'exit1', 'foobar', 'grass', 'hero', 'hero_red', 'hero_green', 'linda', 'linda2', 'metrodoor', 'musicant', 'pillar', 'road', 'roadh', 'roadv', 'shadow', 'stantion201', 'start', 'tree', 'wall' ];
+g.get.i = [ '_', 'bar', 'black', 'blackstep0', 'blackstep1', 'button0', 'button1', 'button2', 'city', 'dump', 'exit', 'exit1', 'foobar', 'frik', 'grass', 'hero', 'hero_red', 'hero_green', 'linda', 'linda2', 'metrodoor', 'musicant', 'pillar', 'police', 'road', 'roadh', 'roadv', 'shadow', 'stantion201', 'start', 'tree', 'wall' ];
 
 window.onload = g.l;
 
@@ -1053,8 +1064,15 @@ g.s.city = function (p)
 			//water
 			{h:0.19,w:0.13,x:0.22,y:0.7,i:g.i._,texture:false,zen:false}
 		],
-		debug: true
+		debug: false
 	});
+
+	switch (g.q.police)
+	{
+		case 0:
+			g.c = g._.u ({ control: 'passive', h: 0.15, i: g.get.r ([g.i.black,g.i.police,g.i.frik]), speed: 0.005, tsearch: 10000 * g.get.r (), wk: 0.42, x: g.get.r (), xk: 0.5, y: 0.6 + 0.15 * g.get.r (), yk: 1, z: 2, zen: true });
+			break;
+	}
 
 	g.c = g._.u ({ control: 'keyboard', h: 0.1, i: g.i.hero, id: 'hero', wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
@@ -1078,8 +1096,8 @@ g.s.menu = function (p)
 				{h:0.18,w:0.98,x:0.01,y:0.56,i:g.i._,texture:false,zen:false},
 
 				//pillars
-				{h:0.62,w:0.04,x:0.27,y:0.05,i:g.i.pillar,texture:false,z:2,zen:true},
-				{h:0.62,w:0.04,x:0.66,y:0.05,i:g.i.pillar,texture:false,z:2,zen:true}
+				{h:0.62,w:0.04,x:0.27,y:0.05,i:g.i.pillar,texture:false,z:3,zen:true},
+				{h:0.62,w:0.04,x:0.66,y:0.05,i:g.i.pillar,texture:false,z:3,zen:true}
 			],
 			debug: false
 		}
@@ -1092,6 +1110,9 @@ g.s.menu = function (p)
 			[
 				//bench
 				{h:0.02,w:0.15,x:0.4,y:0.56,i:g.i._,texture:false,zen:false},
+
+				//exit
+				{h:0.04,w:0.17,x:0.79,y:0.28,i:g.i._,texture:false,zen:false},
 
 				//pillars
 				{h:0.04,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
@@ -1122,6 +1143,9 @@ g.s.menu = function (p)
 	});
 
 	g.c = g._.b ({ act: function () { window.close (); }, cursor: true, h: 0.048, i: g.i.exit, i1: g.i.exit1, wk: 2.625, x: 0.84, y: 0.124, z: 2 });
+
+	for (let i = 0; i < 50; i++)
+	g.c = g._.u ({ control: 'auto', h: 0.15, i: g.get.r ([g.i.black,g.i.police,g.i.frik]), speed: 0.001, tsearch: 10000 * g.get.r (), wk: 0.42, x: g.get.r (), xk: 0.5, y: 0.6 + 0.15 * g.get.r (), yk: 1, z: 2, zen: true });
 
 	g.c = g._.u ({ control: 'auto', h: 0.15, i: g.i.black, speed: 0.005, step: g.a.black.step, tsearch: 500, wk: 0.42, x: 0.35, xk: 0.5, y: 0.6, yk: 1, z: 1 });
 }
@@ -1162,12 +1186,15 @@ g.s.metro = function (p)
 				//bench
 				{h:0.02,w:0.15,x:0.4,y:0.56,i:g.i._,texture:false,zen:false},
 
+				//exit
+				{h:0.04,w:0.17,x:0.79,y:0.28,i:g.i._,texture:false,zen:false},
+
 				//pillars
 				{h:0.04,w:0.06,x:0.65,y:0.64,i:g.i._,texture:false,zen:false},
 				{h:0.04,w:0.06,x:0.26,y:0.64,i:g.i._,texture:false,zen:false},
 				{h:0.03,w:0.44,x:0.27,y:0.53,i:g.i._,texture:false,zen:false}
 			],
-			debug: true
+			debug: false
 		}
 	);
 
@@ -1182,6 +1209,9 @@ switch (g.q.musicant)
 		g.c = g._.u ({ control: 'passive', h: 0.15, hi: 'Хай', i: g.i.musicant, quest: false, story: ['Ты ещё никому не помог'], type: 'npc', wk: 0.68, x: 0.7, xk: 0.5, y: 0.69, yk: 1, win: function() {g.q.musicant = 1;}, z: 2, zen: true });
 	break;
 }
+	//social
+	for (let i = 0; i < 15; i++)
+	g.c = g._.u ({ control: 'auto', h: 0.15, i: g.get.r ([g.i.black,g.i.police,g.i.frik]), speed: 0.001, tsearch: 10000 * g.get.r (), wk: 0.42, x: g.get.r (), xk: 0.5, y: 0.6 + 0.15 * g.get.r (), yk: 1, z: 2, zen: true });
 
 	g.c = g._.u ({ control: 'keyboard', h: 0.15, i: g.i.hero, id: 'hero', wk: 0.42, x: p.x, xk: 0.5, y: p.y, yk: 1, z: 1 });
 }
